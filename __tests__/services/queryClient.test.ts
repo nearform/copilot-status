@@ -18,7 +18,8 @@ describe('services/queryClient', () => {
       expect(options.queries?.gcTime).toBe(Infinity);
       expect(options.queries?.refetchOnWindowFocus).toBe(false);
       expect(options.queries?.refetchOnReconnect).toBe(true);
-      expect(options.queries?.refetchOnMount).toBe(true);
+      expect(options.queries?.refetchOnMount).toBe('always');
+      expect(options.queries?.staleTime).toBe(Infinity);
       expect(options.queries?.networkMode).toBe('offlineFirst');
     });
 
