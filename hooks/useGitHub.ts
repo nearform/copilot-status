@@ -16,8 +16,6 @@ export function useGitHubUser() {
       if (!token) throw new Error('Not authenticated');
       return fetchGitHubUser(token);
     },
-    staleTime: Infinity,
-    refetchOnMount: 'always',
   });
 }
 
@@ -30,9 +28,6 @@ export function useCopilotQuota() {
 
       return fetchCopilotQuota(token);
     },
-    staleTime: Infinity,
-    refetchOnMount: 'always',
-    refetchOnReconnect: true,
   });
 
   return {

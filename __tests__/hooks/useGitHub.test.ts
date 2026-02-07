@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useGitHubUser, useCopilotQuota } from '@/hooks/useGitHub';
 
 jest.mock('@tanstack/react-query', () => ({
   useQuery: jest.fn(() => ({
@@ -30,38 +31,20 @@ describe('hooks/useGitHub', () => {
   });
 
   describe('useGitHubUser', () => {
-    it('should use staleTime Infinity so data never expires', () => {
-      const { useGitHubUser } = require('@/hooks/useGitHub');
+    it('should have correct query key', () => {
       useGitHubUser();
 
       const options = mockedUseQuery.mock.calls[0][0];
-      expect(options.staleTime).toBe(Infinity);
-    });
-
-    it('should always refetch on mount', () => {
-      const { useGitHubUser } = require('@/hooks/useGitHub');
-      useGitHubUser();
-
-      const options = mockedUseQuery.mock.calls[0][0];
-      expect(options.refetchOnMount).toBe('always');
+      expect(options.queryKey).toEqual(['github', 'user']);
     });
   });
 
   describe('useCopilotQuota', () => {
-    it('should use staleTime Infinity so data never expires', () => {
-      const { useCopilotQuota } = require('@/hooks/useGitHub');
+    it('should have correct query key', () => {
       useCopilotQuota();
 
       const options = mockedUseQuery.mock.calls[0][0];
-      expect(options.staleTime).toBe(Infinity);
-    });
-
-    it('should always refetch on mount', () => {
-      const { useCopilotQuota } = require('@/hooks/useGitHub');
-      useCopilotQuota();
-
-      const options = mockedUseQuery.mock.calls[0][0];
-      expect(options.refetchOnMount).toBe('always');
+      expect(options.queryKey).toEqual(['github', 'copilot', 'quota']);
     });
 
     it('should report isCached when fetching with existing data', () => {
@@ -71,7 +54,6 @@ describe('hooks/useGitHub', () => {
         isFetching: true,
       });
 
-      const { useCopilotQuota } = require('@/hooks/useGitHub');
       const result = useCopilotQuota();
 
       expect(result.isCached).toBe(true);
@@ -84,7 +66,6 @@ describe('hooks/useGitHub', () => {
         isFetching: false,
       });
 
-      const { useCopilotQuota } = require('@/hooks/useGitHub');
       const result = useCopilotQuota();
 
       expect(result.isCached).toBe(false);
@@ -97,7 +78,6 @@ describe('hooks/useGitHub', () => {
         isFetching: true,
       });
 
-      const { useCopilotQuota } = require('@/hooks/useGitHub');
       const result = useCopilotQuota();
 
       expect(result.isCached).toBe(false);
