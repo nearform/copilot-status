@@ -21,7 +21,7 @@ export function getTheme(): Theme {
 export function IOSCopilotWidget(data: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
-  const statusColor = getColorByPercent(data.quota.remainingPercent, theme.colors);
+  const statusColor = getColorByPercent(data.quota.consumedPercent, theme.colors);
 
   const smallWidget = (
     <Voltra.VStack spacing={4} alignment="center" style={styles.container}>
@@ -127,7 +127,7 @@ export function IOSCopilotWidgetError() {
 export function AndroidCopilotWidget(data: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
-  const statusColor = getColorByPercent(data.quota.remainingPercent, theme.colors);
+  const statusColor = getColorByPercent(data.quota.consumedPercent, theme.colors);
 
   return (
     <VoltraAndroid.Column
