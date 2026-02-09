@@ -1,0 +1,80 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions for Gradients and Shadows -->
+  <defs>
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22C55E"/>
+      <stop offset="50%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+
+    <filter id="outerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="mascotShadow" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="25" stdDeviation="15" flood-color="black" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Circular Border with Gradient -->
+  <circle cx="512" cy="512" r="410" stroke="url(#ringGradient)" stroke-width="48" fill="none" filter="url(#outerGlow)"/>
+
+  <!-- Mascot (Octocat inspired) -->
+  <g filter="url(#mascotShadow)">
+    <!-- Main Black Head Shape -->
+    <path d="M512 240
+             C380 240 240 320 240 470
+             C240 590 320 670 320 670
+             L350 810
+             C350 810 420 850 512 850
+             S674 810 674 810
+             L704 670
+             C704 670 784 590 784 470
+             C784 320 644 240 512 240 Z"
+          fill="#111111"/>
+
+    <!-- Whiskers -->
+    <g stroke="#111111" stroke-width="6" stroke-linecap="round" fill="none">
+      <!-- Left side -->
+      <path d="M260 480 C180 475 100 480 30 495" />
+      <path d="M250 515 C170 515 90 520 20 535" />
+      <path d="M260 550 C180 560 100 565 40 585" />
+      <!-- Right side -->
+      <path d="M764 480 C844 475 924 480 994 495" />
+      <path d="M774 515 C854 515 934 520 1004 535" />
+      <path d="M764 550 C844 560 924 565 984 585" />
+    </g>
+
+    <!-- Ears -->
+    <path d="M420 280 L210 200 C180 190 160 230 200 280 L340 420 Z" fill="#111111"/>
+    <path d="M604 280 L814 200 C844 190 864 230 824 280 L684 420 Z" fill="#111111"/>
+
+    <!-- Flesh Colored Face Area -->
+    <path d="M512 350
+             C410 350 310 410 310 530
+             C310 630 400 670 512 670
+             S714 630 714 530
+             C714 410 614 350 512 350 Z"
+          fill="#F0D3B8"/>
+
+    <!-- Eyes -->
+    <g>
+      <!-- Left Eye -->
+      <circle cx="420" cy="500" r="60" fill="white"/>
+      <circle cx="420" cy="500" r="35" fill="#91544A"/>
+      <!-- Right Eye -->
+      <circle cx="604" cy="500" r="60" fill="white"/>
+      <circle cx="604" cy="500" r="35" fill="#91544A"/>
+    </g>
+
+    <!-- Nose -->
+    <circle cx="512" cy="560" r="12" fill="#91544A"/>
+
+    <!-- Mouth -->
+    <path d="M485 605
+             C495 620 505 625 512 625
+             S529 620 539 605"
+          stroke="#91544A" stroke-width="8" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

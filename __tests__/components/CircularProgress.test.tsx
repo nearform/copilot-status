@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
 import { CircularProgress } from '@/components/CircularProgress';
+import { QuotaInfo } from '@/types/quota';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 
 // Mock react-i18next
 jest.mock('react-i18next', () => ({
@@ -56,21 +57,29 @@ jest.mock('react-native-unistyles', () => ({
 }));
 
 describe('CircularProgress', () => {
-  const defaultProps = {
-    usedQuota: 50,
-    totalQuota: 100,
-    size: 200,
-  };
+  const createQuotaInfo = (usedQuota: number, totalQuota: number): QuotaInfo => ({
+    type: 'premium_interactions',
+    totalQuota,
+    remainingQuota: totalQuota - usedQuota,
+    usedQuota,
+    remainingPercent: totalQuota > 0 ? ((totalQuota - usedQuota) / totalQuota) * 100 : 0,
+    consumedPercent: totalQuota > 0 ? (usedQuota / totalQuota) * 100 : 0,
+    resetDate: new Date(),
+    unlimited: false,
+    lastUpdated: new Date(),
+  });
 
   it('renders correctly with initial state showing used quota', () => {
-    render(<CircularProgress {...defaultProps} />);
+    const quota = createQuotaInfo(50, 100);
+    render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('50%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
   });
 
   it('toggles to show available quota when pressed', () => {
-    render(<CircularProgress {...defaultProps} />);
+    const quota = createQuotaInfo(50, 100);
+    render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('50%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
@@ -83,7 +92,8 @@ describe('CircularProgress', () => {
   });
 
   it('toggles back to used quota when pressed again', () => {
-    render(<CircularProgress {...defaultProps} />);
+    const quota = createQuotaInfo(50, 100);
+    render(<CircularProgress quota={quota} size={200} />);
 
     const pressable = screen.getByRole('button');
 
@@ -95,7 +105,8 @@ describe('CircularProgress', () => {
   });
 
   it('calculates percentages correctly for different quota values', () => {
-    const { rerender } = render(<CircularProgress usedQuota={75} totalQuota={100} size={200} />);
+    const quota1 = createQuotaInfo(75, 100);
+    const { rerender } = render(<CircularProgress quota={quota1} size={200} />);
 
     expect(screen.getByText('75%')).toBeTruthy();
 
@@ -104,20 +115,23 @@ describe('CircularProgress', () => {
 
     expect(screen.getByText('25%')).toBeTruthy();
 
-    rerender(<CircularProgress usedQuota={90} totalQuota={100} size={200} />);
+    const quota2 = createQuotaInfo(90, 100);
+    rerender(<CircularProgress quota={quota2} size={200} />);
 
     expect(screen.getByText('10%')).toBeTruthy();
   });
 
   it('handles edge case with 0 total quota', () => {
-    render(<CircularProgress usedQuota={0} totalQuota={0} size={200} />);
+    const quota = createQuotaInfo(0, 0);
+    render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('0%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
   });
 
   it('handles edge case with full quota usage', () => {
-    render(<CircularProgress usedQuota={100} totalQuota={100} size={200} />);
+    const quota = createQuotaInfo(100, 100);
+    render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('100%')).toBeTruthy();
 

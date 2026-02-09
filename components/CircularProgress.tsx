@@ -1,3 +1,4 @@
+import { QuotaInfo } from '@/types/quota';
 import { getAvailableColorByPercent, getColorByPercent } from '@/utils/colorUtils';
 import { formatPercent } from '@/utils/numberUtils';
 import { useState } from 'react';
@@ -7,33 +8,31 @@ import PieChart from 'react-native-pie-chart';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 interface CircularProgressProps {
-  usedQuota: number;
-  totalQuota: number;
+  quota: QuotaInfo;
   size?: number;
 }
 
 const PIE_CHART_COVER = { radius: 0.7, color: 'transparent' };
 
-export function CircularProgress({ usedQuota, totalQuota, size = 360 }: CircularProgressProps) {
+export function CircularProgress({ quota, size = 360 }: CircularProgressProps) {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
   const [showAvailable, setShowAvailable] = useState(false);
 
-  const consumedPercent = totalQuota > 0 ? (usedQuota / totalQuota) * 100 : 0;
-  const availablePercent = 100 - consumedPercent;
+  const { consumedPercent, remainingPercent } = quota;
 
   const color = getColorByPercent(consumedPercent, theme.colors);
-  const availableColor = getAvailableColorByPercent(availablePercent, theme.colors);
+  const availableColor = getAvailableColorByPercent(remainingPercent, theme.colors);
 
-  const displayPercent = showAvailable ? availablePercent : consumedPercent;
+  const displayPercent = showAvailable ? remainingPercent : consumedPercent;
   const series = showAvailable
     ? [
-        { value: availablePercent, color: availableColor },
+        { value: remainingPercent, color: availableColor },
         { value: consumedPercent, color: theme.colors.border },
       ]
     : [
         { value: consumedPercent, color },
-        { value: availablePercent, color: theme.colors.border },
+        { value: remainingPercent, color: theme.colors.border },
       ];
 
   const handleToggleView = () => {

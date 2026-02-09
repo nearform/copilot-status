@@ -33,7 +33,7 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
       }
     >
       <View style={styles.progressContainer}>
-        <CircularProgress usedQuota={quota.usedQuota} totalQuota={quota.totalQuota} size={200} />
+        <CircularProgress quota={quota} size={200} />
       </View>
 
       <View style={styles.statsContainer}>
