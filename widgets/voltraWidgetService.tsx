@@ -105,9 +105,7 @@ function buildAndroidWidgetVariants(
               <VoltraAndroid.Text style={{ ...styles.largeValue, color: statusColor }}>
                 {formatPercent(quota.consumedPercent)}
               </VoltraAndroid.Text>
-              <VoltraAndroid.Text style={styles.label}>
-                {i18n.t('widget.usedLowercase')}
-              </VoltraAndroid.Text>
+              <VoltraAndroid.Text style={styles.label}>{i18n.t('widget.used')}</VoltraAndroid.Text>
             </VoltraAndroid.Column>
             <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
               <VoltraAndroid.Text style={{ ...styles.largeValue, color: theme.colors.text }}>

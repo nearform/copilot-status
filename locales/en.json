@@ -70,7 +70,6 @@
   "widget": {
     "copilot": "Copilot",
     "used": "Used",
-    "usedLowercase": "used",
     "left": "Left",
     "requestsUsed": "Requests used",
     "requestsLeft": "Requests left",

@@ -30,7 +30,7 @@ export function IOSCopilotWidget(data: WidgetData) {
           <Voltra.Text style={{ ...styles.mediumValue, color: statusColor }}>
             {formatPercent(data.quota.consumedPercent)}
           </Voltra.Text>
-          <Voltra.Text style={styles.label}>{i18n.t('widget.usedLowercase')}</Voltra.Text>
+          <Voltra.Text style={styles.label}>{i18n.t('widget.used')}</Voltra.Text>
         </Voltra.VStack>
       </Voltra.HStack>
       <Voltra.HStack spacing={16} alignment="center">
@@ -62,7 +62,7 @@ export function IOSCopilotWidget(data: WidgetData) {
           <Voltra.Text style={{ ...styles.largeValue, color: statusColor }}>
             {formatPercent(data.quota.consumedPercent)}
           </Voltra.Text>
-          <Voltra.Text style={styles.label}>{i18n.t('widget.usedLowercase')}</Voltra.Text>
+          <Voltra.Text style={styles.label}>{i18n.t('widget.used')}</Voltra.Text>
         </Voltra.VStack>
         <Voltra.VStack spacing={2} alignment="center">
           <Voltra.Text style={{ ...styles.largeValue, color: theme.colors.text }}>
@@ -145,7 +145,7 @@ export function AndroidCopilotWidget(data: WidgetData) {
             {formatPercent(data.quota.consumedPercent)}
           </VoltraAndroid.Text>
           <VoltraAndroid.Text style={styles.label}>
-            {i18n.t('widget.usedLowercase')}
+            {i18n.t('widget.used')}
           </VoltraAndroid.Text>
         </VoltraAndroid.Column>
 
