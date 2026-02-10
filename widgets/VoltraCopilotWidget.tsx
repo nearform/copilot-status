@@ -2,7 +2,7 @@ import i18n from '@/services/i18n';
 import { themes, type Theme } from '@/src/styles/unistyles';
 import { useThemeStore } from '@/stores/theme';
 import { QuotaInfo } from '@/types/quota';
-import { getColorByPercent } from '@/utils/colorUtils';
+import { getAvailableColorByPercent, getColorByPercent } from '@/utils/colorUtils';
 import { formatFullDate } from '@/utils/dateTimeUtils';
 import { formatPercent } from '@/utils/numberUtils';
 import { Voltra } from 'voltra';
@@ -18,17 +18,18 @@ export function getTheme(): Theme {
   return useThemeStore.getState().isDarkMode() ? themes.dark : themes.light;
 }
 
-export function IOSCopilotWidget(data: WidgetData) {
+export function IOSCopilotWidget({ quota, username }: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
-  const statusColor = getColorByPercent(data.quota.consumedPercent, theme.colors);
+  const consumedColor = getColorByPercent(quota.consumedPercent, theme.colors);
+  const remainingColor = getAvailableColorByPercent(quota.remainingPercent, theme.colors);
 
   const smallWidget = (
     <Voltra.VStack spacing={4} alignment="center" style={styles.container}>
       <Voltra.HStack spacing={16} alignment="center">
         <Voltra.VStack spacing={2} alignment="center">
-          <Voltra.Text style={{ ...styles.mediumValue, color: statusColor }}>
-            {formatPercent(data.quota.consumedPercent)}
+          <Voltra.Text style={{ ...styles.mediumValue, color: consumedColor }}>
+            {formatPercent(quota.consumedPercent)}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.used')}</Voltra.Text>
         </Voltra.VStack>
@@ -36,21 +37,21 @@ export function IOSCopilotWidget(data: WidgetData) {
       <Voltra.HStack spacing={16} alignment="center">
         <Voltra.VStack spacing={2} alignment="center">
           <Voltra.Text style={{ ...styles.mediumValue, color: theme.colors.text }}>
-            {data.quota.usedQuota}
+            {quota.usedQuota}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.requestsUsed')}</Voltra.Text>
         </Voltra.VStack>
       </Voltra.HStack>
       <Voltra.HStack spacing={16} alignment="center">
         <Voltra.VStack spacing={2} alignment="center">
-          <Voltra.Text style={{ ...styles.mediumValue, color: theme.colors.good }}>
-            {data.quota.remainingQuota}
+          <Voltra.Text style={{ ...styles.mediumValue, color: remainingColor }}>
+            {quota.remainingQuota}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.requestsLeft')}</Voltra.Text>
         </Voltra.VStack>
       </Voltra.HStack>
       <Voltra.Text style={styles.smallFooter}>
-        {data.username} - {formatFullDate(i18n.t, data.quota.lastUpdated)}
+        {username} - {formatFullDate(i18n.t, quota.lastUpdated)}
       </Voltra.Text>
     </Voltra.VStack>
   );
@@ -59,26 +60,26 @@ export function IOSCopilotWidget(data: WidgetData) {
     <Voltra.VStack spacing={4} alignment="center" style={styles.container}>
       <Voltra.HStack spacing={16} alignment="center">
         <Voltra.VStack spacing={2} alignment="center">
-          <Voltra.Text style={{ ...styles.largeValue, color: statusColor }}>
-            {formatPercent(data.quota.consumedPercent)}
+          <Voltra.Text style={{ ...styles.largeValue, color: consumedColor }}>
+            {formatPercent(quota.consumedPercent)}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.used')}</Voltra.Text>
         </Voltra.VStack>
         <Voltra.VStack spacing={2} alignment="center">
           <Voltra.Text style={{ ...styles.largeValue, color: theme.colors.text }}>
-            {data.quota.usedQuota}
+            {quota.usedQuota}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.requestsUsed')}</Voltra.Text>
         </Voltra.VStack>
         <Voltra.VStack spacing={2} alignment="center">
-          <Voltra.Text style={{ ...styles.largeValue, color: theme.colors.good }}>
-            {data.quota.remainingQuota}
+          <Voltra.Text style={{ ...styles.largeValue, color: remainingColor }}>
+            {quota.remainingQuota}
           </Voltra.Text>
           <Voltra.Text style={styles.label}>{i18n.t('widget.requestsLeft')}</Voltra.Text>
         </Voltra.VStack>
       </Voltra.HStack>
       <Voltra.Text style={styles.footer}>
-        {data.username} - {formatFullDate(i18n.t, data.quota.lastUpdated)}
+        {username} - {formatFullDate(i18n.t, quota.lastUpdated)}
       </Voltra.Text>
     </Voltra.VStack>
   );
@@ -124,10 +125,11 @@ export function IOSCopilotWidgetError() {
  * Android Copilot Widget - uses VoltraAndroid components
  * Maps to Jetpack Compose Glance on Android (Column, Row, Text)
  */
-export function AndroidCopilotWidget(data: WidgetData) {
+export function AndroidCopilotWidget({ quota, username }: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
-  const statusColor = getColorByPercent(data.quota.consumedPercent, theme.colors);
+  const consumedColor = getColorByPercent(quota.consumedPercent, theme.colors);
+  const remainingColor = getAvailableColorByPercent(quota.remainingPercent, theme.colors);
 
   return (
     <VoltraAndroid.Column
@@ -141,17 +143,15 @@ export function AndroidCopilotWidget(data: WidgetData) {
         style={styles.row}
       >
         <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
-          <VoltraAndroid.Text style={{ ...styles.largeValue, color: statusColor }}>
-            {formatPercent(data.quota.consumedPercent)}
+          <VoltraAndroid.Text style={{ ...styles.largeValue, color: consumedColor }}>
+            {formatPercent(quota.consumedPercent)}
           </VoltraAndroid.Text>
-          <VoltraAndroid.Text style={styles.label}>
-            {i18n.t('widget.used')}
-          </VoltraAndroid.Text>
+          <VoltraAndroid.Text style={styles.label}>{i18n.t('widget.used')}</VoltraAndroid.Text>
         </VoltraAndroid.Column>
 
         <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
           <VoltraAndroid.Text style={{ ...styles.largeValue, color: theme.colors.text }}>
-            {data.quota.usedQuota}
+            {quota.usedQuota}
           </VoltraAndroid.Text>
           <VoltraAndroid.Text style={styles.label}>
             {i18n.t('widget.requestsUsed')}
@@ -159,8 +159,8 @@ export function AndroidCopilotWidget(data: WidgetData) {
         </VoltraAndroid.Column>
 
         <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
-          <VoltraAndroid.Text style={{ ...styles.largeValue, color: theme.colors.good }}>
-            {data.quota.remainingQuota}
+          <VoltraAndroid.Text style={{ ...styles.largeValue, color: remainingColor }}>
+            {quota.remainingQuota}
           </VoltraAndroid.Text>
           <VoltraAndroid.Text style={styles.label}>
             {i18n.t('widget.requestsLeft')}
@@ -169,7 +169,7 @@ export function AndroidCopilotWidget(data: WidgetData) {
       </VoltraAndroid.Row>
 
       <VoltraAndroid.Text style={styles.footerWithMargin}>
-        {data.username} - {formatFullDate(i18n.t, data.quota.lastUpdated)}
+        {username} - {formatFullDate(i18n.t, quota.lastUpdated)}
       </VoltraAndroid.Text>
     </VoltraAndroid.Column>
   );

@@ -3,7 +3,7 @@ import { GitHubUser } from '@/services/api';
 import i18n from '@/services/i18n';
 import { queryClient } from '@/services/queryClient';
 import type { AllQuotas, QuotaInfo } from '@/types/quota';
-import { getColorByPercent } from '@/utils/colorUtils';
+import { getAvailableColorByPercent, getColorByPercent } from '@/utils/colorUtils';
 import { formatFullDate } from '@/utils/dateTimeUtils';
 import { formatPercent } from '@/utils/numberUtils';
 import { Platform } from 'react-native';
@@ -84,7 +84,8 @@ function buildAndroidWidgetVariants(
     ];
   }
 
-  const statusColor = getColorByPercent(quota.remainingPercent, theme.colors);
+  const consumedColor = getColorByPercent(quota.consumedPercent, theme.colors);
+  const remainingColor = getAvailableColorByPercent(quota.remainingPercent, theme.colors);
 
   return [
     {
@@ -102,7 +103,7 @@ function buildAndroidWidgetVariants(
             style={styles.row}
           >
             <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
-              <VoltraAndroid.Text style={{ ...styles.largeValue, color: statusColor }}>
+              <VoltraAndroid.Text style={{ ...styles.largeValue, color: consumedColor }}>
                 {formatPercent(quota.consumedPercent)}
               </VoltraAndroid.Text>
               <VoltraAndroid.Text style={styles.label}>{i18n.t('widget.used')}</VoltraAndroid.Text>
@@ -117,7 +118,7 @@ function buildAndroidWidgetVariants(
             </VoltraAndroid.Column>
 
             <VoltraAndroid.Column horizontalAlignment="center-horizontally" style={styles.column}>
-              <VoltraAndroid.Text style={{ ...styles.largeValue, color: theme.colors.good }}>
+              <VoltraAndroid.Text style={{ ...styles.largeValue, color: remainingColor }}>
                 {quota.remainingQuota}
               </VoltraAndroid.Text>
               <VoltraAndroid.Text style={styles.label}>
