@@ -20,61 +20,114 @@
   <!-- Circular Border with Gradient -->
   <circle cx="512" cy="512" r="410" stroke="url(#ringGradient)" stroke-width="48" fill="none" filter="url(#outerGlow)"/>
 
-  <!-- Mascot (Octocat inspired) -->
+  <!-- Mascot (GitHub Copilot Robot inspired) -->
   <g filter="url(#mascotShadow)">
-    <!-- Main Black Head Shape -->
-    <path d="M512 240
-             C380 240 240 320 240 470
-             C240 590 320 670 320 670
-             L350 810
-             C350 810 420 850 512 850
-             S674 810 674 810
-             L704 670
-             C704 670 784 590 784 470
-             C784 320 644 240 512 240 Z"
-          fill="#111111"/>
+    <!-- Main Head Shape (Rounded Helmet) -->
+    <defs>
+      <linearGradient id="headGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2DD4BF"/>
+        <stop offset="50%" stop-color="#0EA5E9"/>
+        <stop offset="100%" stop-color="#2563EB"/>
+      </linearGradient>
+      <linearGradient id="faceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#F8FAFC"/>
+        <stop offset="100%" stop-color="#E2E8F0"/>
+      </linearGradient>
+      <linearGradient id="goggleGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#2563EB"/>
+      </linearGradient>
+    </defs>
 
-    <!-- Whiskers -->
-    <g stroke="#111111" stroke-width="6" stroke-linecap="round" fill="none">
-      <!-- Left side -->
-      <path d="M260 480 C180 475 100 480 30 495" />
-      <path d="M250 515 C170 515 90 520 20 535" />
-      <path d="M260 550 C180 560 100 565 40 585" />
-      <!-- Right side -->
-      <path d="M764 480 C844 475 924 480 994 495" />
-      <path d="M774 515 C854 515 934 520 1004 535" />
-      <path d="M764 550 C844 560 924 565 984 585" />
-    </g>
+    <!-- Side Ears/Headphones -->
+    <rect x="180" y="440" width="100" height="180" rx="40" fill="url(#headGradient)"/>
+    <rect x="744" y="440" width="100" height="180" rx="40" fill="url(#headGradient)"/>
+    <circle cx="230" cy="530" r="15" fill="#BAE6FD" opacity="0.8"/>
+    <circle cx="794" cy="530" r="15" fill="#BAE6FD" opacity="0.8"/>
+    <path d="M230 530 L230 480" stroke="#BAE6FD" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+    <path d="M794 530 L794 480" stroke="#BAE6FD" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
 
-    <!-- Ears -->
-    <path d="M420 280 L210 200 C180 190 160 230 200 280 L340 420 Z" fill="#111111"/>
-    <path d="M604 280 L814 200 C844 190 864 230 824 280 L684 420 Z" fill="#111111"/>
+    <!-- Main Helmet Body -->
+    <path d="M260 500
+             C260 350 360 200 512 200
+             C664 200 764 350 764 500
+             L764 700
+             C764 780 700 840 512 840
+             C324 840 260 780 260 700
+             Z"
+          fill="url(#headGradient)"/>
 
-    <!-- Flesh Colored Face Area -->
-    <path d="M512 350
-             C410 350 310 410 310 530
-             C310 630 400 670 512 670
-             S714 630 714 530
-             C714 410 614 350 512 350 Z"
-          fill="#F0D3B8"/>
+    <!-- Face Plate -->
+    <path d="M310 520
+             C310 520 310 700 310 700
+             C310 760 360 810 512 810
+             C664 810 714 760 714 700
+             L714 520
+             C714 520 620 540 512 540
+             C404 540 310 520 310 520 Z"
+          fill="url(#faceGradient)"/>
 
     <!-- Eyes -->
-    <g>
-      <!-- Left Eye -->
-      <circle cx="420" cy="500" r="60" fill="white"/>
-      <circle cx="420" cy="500" r="35" fill="#91544A"/>
-      <!-- Right Eye -->
-      <circle cx="604" cy="500" r="60" fill="white"/>
-      <circle cx="604" cy="500" r="35" fill="#91544A"/>
-    </g>
+    <rect x="400" y="600" width="60" height="100" rx="30" fill="#0F172A"/>
+    <rect x="564" y="600" width="60" height="100" rx="30" fill="#0F172A"/>
 
-    <!-- Nose -->
-    <circle cx="512" cy="560" r="12" fill="#91544A"/>
+    <!-- Eye Reflections -->
+    <path d="M410 615 C410 615 440 615 450 640" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.8"/>
+    <path d="M574 615 C574 615 604 615 614 640" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.8"/>
 
-    <!-- Mouth -->
-    <path d="M485 605
-             C495 620 505 625 512 625
-             S529 620 539 605"
-          stroke="#91544A" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <!-- Goggles Frame -->
+    <path d="M310 350
+             C310 290 350 250 420 250
+             C490 250 512 300 512 300
+             C512 300 534 250 604 250
+             C674 250 714 290 714 350
+             L714 430
+             C714 490 674 530 604 530
+             C534 530 512 480 512 480
+             C512 480 490 530 420 530
+             C350 530 310 490 310 430
+             Z"
+          fill="#334155"/>
+
+    <path d="M320 360
+             C320 300 360 260 420 260
+             C480 260 502 310 502 310
+             L502 430
+             C502 430 480 520 420 520
+             C360 520 320 480 320 430
+             Z"
+          fill="white" stroke="#94A3B8" stroke-width="12"/>
+
+    <path d="M704 360
+             C704 300 664 260 604 260
+             C544 260 522 310 522 310
+             L522 430
+             C522 430 544 520 604 520
+             C664 520 704 480 704 430
+             Z"
+          fill="white" stroke="#94A3B8" stroke-width="12"/>
+
+    <!-- Goggles Lens -->
+    <path d="M335 360
+             C335 310 365 275 420 275
+             C475 275 487 310 487 310
+             L487 430
+             C487 430 475 505 420 505
+             C365 505 335 470 335 430
+             Z"
+          fill="url(#goggleGlass)"/>
+
+    <path d="M689 360
+             C689 310 659 275 604 275
+             C549 275 537 310 537 310
+             L537 430
+             C537 430 549 505 604 505
+             C659 505 689 470 689 430
+             Z"
+          fill="url(#goggleGlass)"/>
+
+    <!-- Goggles Reflections -->
+    <path d="M350 320 L450 290" stroke="white" stroke-width="20" stroke-opacity="0.2" stroke-linecap="round"/>
+    <path d="M554 320 L654 290" stroke="white" stroke-width="20" stroke-opacity="0.2" stroke-linecap="round"/>
   </g>
 </svg>
