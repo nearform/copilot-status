@@ -33,16 +33,24 @@ function parseQuotaSnapshot(
 
 function parseQuotaResponse(response: GitHubCopilotResponse): AllQuotas {
   const resetDate = new Date(response.quota_reset_date_utc);
+  const hasSubscription = response.access_type_sku !== 'no_access';
 
-  return {
-    premium_interactions: parseQuotaSnapshot(
-      'premium_interactions',
-      response.quota_snapshots.premium_interactions,
-      resetDate
-    ),
-    chat: parseQuotaSnapshot('chat', response.quota_snapshots.chat, resetDate),
-    completions: parseQuotaSnapshot('completions', response.quota_snapshots.completions, resetDate),
-  };
+  return hasSubscription
+    ? {
+        hasSubscription,
+        premium_interactions: parseQuotaSnapshot(
+          'premium_interactions',
+          response.quota_snapshots.premium_interactions,
+          resetDate
+        ),
+        chat: parseQuotaSnapshot('chat', response.quota_snapshots.chat, resetDate),
+        completions: parseQuotaSnapshot(
+          'completions',
+          response.quota_snapshots.completions,
+          resetDate
+        ),
+      }
+    : { hasSubscription };
 }
 
 export async function fetchCopilotQuota(token: string): Promise<AllQuotas> {
@@ -54,7 +62,5 @@ export async function fetchCopilotQuota(token: string): Promise<AllQuotas> {
     data: GitHubCopilotResponse;
   };
 
-  return data.access_type_sku === 'no_access'
-    ? Promise.reject(new Error('User does not have access to Copilot'))
-    : parseQuotaResponse(data);
+  return parseQuotaResponse(data);
 }

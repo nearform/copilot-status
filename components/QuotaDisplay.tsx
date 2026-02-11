@@ -17,7 +17,7 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
   const { t } = useTranslation();
   const { data: quotas, isFetching, error, isCached, refetch } = useCopilotQuota();
 
-  if (isFetching && !quotas) {
+  if (isFetching) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={theme.colors.tint} />
@@ -26,7 +26,7 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
     );
   }
 
-  if (error?.message && !quotas) {
+  if (error?.message) {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorTitle}>{t('dashboard.unableToLoad')}</Text>
@@ -35,10 +35,10 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
     );
   }
 
-  if (!quotas) {
+  if (!quotas?.hasSubscription) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorText}>{t('dashboard.noDataAvailable')}</Text>
+        <Text style={styles.errorText}>{t('dashboard.noSubscription')}</Text>
       </View>
     );
   }
