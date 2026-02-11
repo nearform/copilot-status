@@ -1,5 +1,5 @@
-import { QuotaDisplay } from '../../components/QuotaDisplay';
+import { QuotaScreen } from '@/components/QuotaScreen';
 
 export default function ChatTab() {
-  return <QuotaDisplay quotaType="chat" />;
+  return <QuotaScreen quotaType="chat" />;
 }
