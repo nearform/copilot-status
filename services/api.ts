@@ -50,7 +50,11 @@ export async function fetchCopilotQuota(token: string): Promise<AllQuotas> {
     auth: token,
   });
 
-  const { data } = await octokit.request('GET /copilot_internal/user');
+  const { data } = (await octokit.request('GET /copilot_internal/user')) as {
+    data: GitHubCopilotResponse;
+  };
 
-  return parseQuotaResponse(data);
+  return data.access_type_sku === 'no_access'
+    ? Promise.reject(new Error('User does not have access to Copilot'))
+    : parseQuotaResponse(data);
 }

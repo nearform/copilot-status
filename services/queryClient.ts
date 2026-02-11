@@ -22,8 +22,8 @@ export const queryPersister = createAsyncStoragePersister({
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 2,
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      retry: (failureCount, error: any) => failureCount < 3 && error?.status,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30_000),
       gcTime: Infinity,
       staleTime: Infinity,
       refetchOnWindowFocus: false,
