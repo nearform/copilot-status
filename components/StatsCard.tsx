@@ -34,6 +34,7 @@ export function StatsCard({ icon, label, value, color }: StatsCardProps) {
 
 const styles = StyleSheet.create(theme => ({
   card: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.colors.card,
