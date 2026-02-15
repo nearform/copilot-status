@@ -1,5 +1,6 @@
 import { fetchCopilotQuota, fetchGitHubUser } from '@/services/api';
 import type { GitHubCopilotResponse } from '@/types/api';
+import type { AllQuotas } from '@/types/quota';
 import { Octokit } from '@octokit/rest';
 
 jest.mock('@/services/storage');
@@ -116,8 +117,11 @@ describe('services/api', () => {
 
       expect(Octokit).toHaveBeenCalledWith({ auth: 'test-token' });
       expect(mockRequest).toHaveBeenCalledWith('GET /copilot_internal/user');
+      expect(result.hasSubscription).toBe(true);
 
-      expect(result.premium_interactions).toEqual({
+      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+
+      expect(withQuotas.premium_interactions).toEqual({
         type: 'premium_interactions',
         totalQuota: 1000,
         remainingQuota: 500,
@@ -129,7 +133,7 @@ describe('services/api', () => {
         unlimited: false,
       });
 
-      expect(result.chat).toEqual({
+      expect(withQuotas.chat).toEqual({
         type: 'chat',
         totalQuota: 0,
         remainingQuota: 0,
@@ -141,7 +145,7 @@ describe('services/api', () => {
         unlimited: true,
       });
 
-      expect(result.completions).toEqual({
+      expect(withQuotas.completions).toEqual({
         type: 'completions',
         totalQuota: 0,
         remainingQuota: 0,
@@ -176,10 +180,14 @@ describe('services/api', () => {
 
       const result = await fetchCopilotQuota('test-token');
 
-      expect(result.premium_interactions.usedQuota).toBe(1500);
-      expect(result.premium_interactions.totalQuota).toBe(2000);
-      expect(result.premium_interactions.remainingQuota).toBe(500);
-      expect(result.premium_interactions.remainingPercent).toBe(25);
+      expect(result.hasSubscription).toBe(true);
+
+      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+
+      expect(withQuotas.premium_interactions.usedQuota).toBe(1500);
+      expect(withQuotas.premium_interactions.totalQuota).toBe(2000);
+      expect(withQuotas.premium_interactions.remainingQuota).toBe(500);
+      expect(withQuotas.premium_interactions.remainingPercent).toBe(25);
     });
 
     it('should throw error if API call fails', async () => {

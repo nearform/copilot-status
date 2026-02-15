@@ -14,7 +14,7 @@ describe('services/queryClient', () => {
     it('should have correct query default options', () => {
       const options = queryClient.getDefaultOptions();
 
-      expect(options.queries?.retry).toBe(2);
+      expect(typeof options.queries?.retry).toBe('function');
       expect(options.queries?.gcTime).toBe(Infinity);
       expect(options.queries?.refetchOnWindowFocus).toBe(false);
       expect(options.queries?.refetchOnReconnect).toBe(true);

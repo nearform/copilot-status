@@ -29,8 +29,9 @@ function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch
   const queryState = queryClient.getQueryState<AllQuotas>(QUERY_KEYS.COPILOT_QUOTA);
   const githubUser = queryClient.getQueryData<GitHubUser>(QUERY_KEYS.GITHUB_USER);
 
+  const data = queryState?.data;
   return {
-    quota: queryState?.data?.premium_interactions ?? null,
+    quota: data?.hasSubscription ? data.premium_interactions : null,
     username: githubUser?.login ?? '',
     lastFetch: queryState?.dataUpdatedAt ?? null,
   };
