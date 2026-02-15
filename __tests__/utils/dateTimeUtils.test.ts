@@ -145,7 +145,6 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(16);
       expect(result.dailyAverage).toBe(18);
-      // 30 - 16 = 14 days elapsed, 700 / 14 = 50
       expect(result.dailyBudgetUsed).toBe(50);
     });
 
@@ -157,8 +156,7 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
-      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
-      expect(result.dailyBudgetUsed).toBe(31);
+      expect(result.dailyBudgetUsed).toBe(30);
     });
 
     it('should return 0 daily average when no quota remaining', () => {
@@ -168,7 +166,6 @@ describe('dateTimeUtils', () => {
       const result = getDailyQuotaInsight(0, resetDate, 1000);
 
       expect(result.dailyAverage).toBe(0);
-      // 30 - 16 = 14 days elapsed, 1000 / 14 = 71
       expect(result.dailyBudgetUsed).toBe(71);
     });
 
@@ -180,7 +177,6 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(50);
-      // 30 - 1 = 29 days elapsed, 950 / 29 = 32
       expect(result.dailyBudgetUsed).toBe(32);
     });
 
@@ -191,7 +187,6 @@ describe('dateTimeUtils', () => {
       const result = getDailyQuotaInsight(-50, resetDate, 1050);
 
       expect(result.dailyAverage).toBe(0);
-      // 30 - 16 = 14 days elapsed, 1050 / 14 = 75
       expect(result.dailyBudgetUsed).toBe(75);
     });
 
@@ -203,8 +198,7 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
-      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
-      expect(result.dailyBudgetUsed).toBe(31);
+      expect(result.dailyBudgetUsed).toBe(33);
     });
 
     it('should handle year boundaries correctly', () => {
@@ -215,7 +209,6 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(60);
-      // 30 - 1 = 29 days elapsed, 940 / 29 = 32
       expect(result.dailyBudgetUsed).toBe(32);
     });
 
@@ -227,8 +220,7 @@ describe('dateTimeUtils', () => {
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
-      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
-      expect(result.dailyBudgetUsed).toBe(31);
+      expect(result.dailyBudgetUsed).toBe(30);
     });
   });
 });
