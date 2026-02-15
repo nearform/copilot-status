@@ -116,6 +116,8 @@ describe('services/api', () => {
 
       expect(Octokit).toHaveBeenCalledWith({ auth: 'test-token' });
       expect(mockRequest).toHaveBeenCalledWith('GET /copilot_internal/user');
+      expect(result.hasSubscription).toBe(true);
+      if (!result.hasSubscription) return;
 
       expect(result.premium_interactions).toEqual({
         type: 'premium_interactions',
@@ -175,6 +177,9 @@ describe('services/api', () => {
       );
 
       const result = await fetchCopilotQuota('test-token');
+
+      expect(result.hasSubscription).toBe(true);
+      if (!result.hasSubscription) return;
 
       expect(result.premium_interactions.usedQuota).toBe(1500);
       expect(result.premium_interactions.totalQuota).toBe(2000);

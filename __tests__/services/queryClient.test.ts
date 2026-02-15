@@ -14,7 +14,7 @@ describe('services/queryClient', () => {
     it('should have correct query default options', () => {
       const options = queryClient.getDefaultOptions();
 
-      expect(options.queries?.retry).toBe(2);
+      expect(typeof options.queries?.retry).toBe('function');
       expect(options.queries?.gcTime).toBe(Infinity);
       expect(options.queries?.refetchOnWindowFocus).toBe(false);
       expect(options.queries?.refetchOnReconnect).toBe(true);
@@ -28,6 +28,26 @@ describe('services/queryClient', () => {
 
       expect(options.mutations?.retry).toBe(1);
       expect(options.mutations?.networkMode).toBe('offlineFirst');
+    });
+
+    it('should have correct retry function behavior', () => {
+      const options = queryClient.getDefaultOptions();
+      const retry = options.queries?.retry as (failureCount: number, error: any) => boolean;
+
+      expect(retry).toBeDefined();
+      expect(typeof retry).toBe('function');
+
+      // Should retry when failureCount < 3 and error has status
+      expect(retry(0, { status: 500 })).toBeTruthy();
+      expect(retry(1, { status: 500 })).toBeTruthy();
+      expect(retry(2, { status: 500 })).toBeTruthy();
+
+      // Should not retry when failureCount >= 3
+      expect(retry(3, { status: 500 })).toBeFalsy();
+
+      // Should not retry when error has no status
+      expect(retry(0, {})).toBeFalsy();
+      expect(retry(0, null)).toBeFalsy();
     });
 
     it('should have correct retryDelay function', () => {
