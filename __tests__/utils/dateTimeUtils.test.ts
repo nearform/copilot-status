@@ -141,78 +141,94 @@ describe('dateTimeUtils', () => {
       jest.setSystemTime(new Date('2024-01-15T12:00:00'));
 
       const resetDate = new Date('2024-01-31T23:59:59');
-      const result = getDailyQuotaInsight(300, resetDate);
+      const result = getDailyQuotaInsight(300, resetDate, 700);
 
       expect(result.daysRemaining).toBe(16);
       expect(result.dailyAverage).toBe(18);
+      // 30 - 16 = 14 days elapsed, 700 / 14 = 50
+      expect(result.dailyBudgetUsed).toBe(50);
     });
 
     it('should return at least 1 day remaining even on reset day', () => {
       jest.setSystemTime(new Date('2024-01-31T12:00:00'));
 
       const resetDate = new Date('2024-01-31T23:59:59');
-      const result = getDailyQuotaInsight(100, resetDate);
+      const result = getDailyQuotaInsight(100, resetDate, 900);
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
+      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
+      expect(result.dailyBudgetUsed).toBe(31);
     });
 
     it('should return 0 daily average when no quota remaining', () => {
       jest.setSystemTime(new Date('2024-01-15T12:00:00'));
 
       const resetDate = new Date('2024-01-31T23:59:59');
-      const result = getDailyQuotaInsight(0, resetDate);
+      const result = getDailyQuotaInsight(0, resetDate, 1000);
 
       expect(result.dailyAverage).toBe(0);
+      // 30 - 16 = 14 days elapsed, 1000 / 14 = 71
+      expect(result.dailyBudgetUsed).toBe(71);
     });
 
     it('should calculate exact daily budget for single day remaining', () => {
       jest.setSystemTime(new Date('2024-01-30T12:00:00'));
 
       const resetDate = new Date('2024-01-31T23:59:59');
-      const result = getDailyQuotaInsight(50, resetDate);
+      const result = getDailyQuotaInsight(50, resetDate, 950);
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(50);
+      // 30 - 1 = 29 days elapsed, 950 / 29 = 32
+      expect(result.dailyBudgetUsed).toBe(32);
     });
 
     it('should handle negative remaining quota by returning 0 daily average', () => {
       jest.setSystemTime(new Date('2024-01-15T12:00:00'));
 
       const resetDate = new Date('2024-01-31T23:59:59');
-      const result = getDailyQuotaInsight(-50, resetDate);
+      const result = getDailyQuotaInsight(-50, resetDate, 1050);
 
       expect(result.dailyAverage).toBe(0);
+      // 30 - 16 = 14 days elapsed, 1050 / 14 = 75
+      expect(result.dailyBudgetUsed).toBe(75);
     });
 
     it('should calculate correctly across month boundaries', () => {
       jest.setSystemTime(new Date('2024-02-28T12:00:00'));
 
       const resetDate = new Date('2024-03-01T00:00:00');
-      const result = getDailyQuotaInsight(100, resetDate);
+      const result = getDailyQuotaInsight(100, resetDate, 900);
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
+      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
+      expect(result.dailyBudgetUsed).toBe(31);
     });
 
     it('should handle year boundaries correctly', () => {
       jest.setSystemTime(new Date('2024-12-30T12:00:00'));
 
       const resetDate = new Date('2025-01-01T00:00:00');
-      const result = getDailyQuotaInsight(60, resetDate);
+      const result = getDailyQuotaInsight(60, resetDate, 940);
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(60);
+      // 30 - 1 = 29 days elapsed, 940 / 29 = 32
+      expect(result.dailyBudgetUsed).toBe(32);
     });
 
     it('should round partial days to whole days correctly', () => {
       jest.setSystemTime(new Date('2024-01-15T23:00:00'));
 
       const resetDate = new Date('2024-01-16T06:00:00');
-      const result = getDailyQuotaInsight(100, resetDate);
+      const result = getDailyQuotaInsight(100, resetDate, 900);
 
       expect(result.daysRemaining).toBe(1);
       expect(result.dailyAverage).toBe(100);
+      // 30 - 1 = 29 days elapsed, 900 / 29 = 31
+      expect(result.dailyBudgetUsed).toBe(31);
     });
   });
 });
