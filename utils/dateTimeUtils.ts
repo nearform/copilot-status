@@ -1,14 +1,19 @@
 import { TFunction } from 'i18next';
-import { differenceInDays, formatDistanceToNow } from 'date-fns';
+import { differenceInDays, formatDistanceToNow, subMonths } from 'date-fns';
 
 type Nullable<T> = T | null | undefined;
 
 export interface DailyQuotaInsight {
   daysRemaining: number;
   dailyAverage: number;
+  dailyBudgetUsed: number;
 }
 
-export function getDailyQuotaInsight(remainingQuota: number, resetDate: Date): DailyQuotaInsight {
+export function getDailyQuotaInsight(
+  remainingQuota: number,
+  resetDate: Date,
+  usedQuota: number
+): DailyQuotaInsight {
   const now = new Date();
 
   const diffDays = differenceInDays(resetDate, now);
@@ -16,9 +21,14 @@ export function getDailyQuotaInsight(remainingQuota: number, resetDate: Date): D
   const daysRemaining = Math.max(1, Math.round(diffDays));
   const dailyAverage = Math.max(0, Math.floor(remainingQuota / daysRemaining));
 
+  const billingStartDate = subMonths(resetDate, 1);
+  const daysElapsed = Math.max(1, differenceInDays(now, billingStartDate));
+  const dailyBudgetUsed = Math.max(0, Math.floor(usedQuota / daysElapsed));
+
   return {
     daysRemaining,
     dailyAverage,
+    dailyBudgetUsed,
   };
 }
 

@@ -24,7 +24,8 @@
     "toggleToAvailable": "Show available quota",
     "toggleToUsed": "Show used quota",
     "unlimited": "Unlimited",
-    "dailyAverage": "Daily Budget",
+    "dailyBudgetUsed": "Daily Budget Used",
+    "dailyBudgetLeft": "Daily Budget Left",
     "daysRemaining": "Days Left",
     "perDay": "{{count}}/day",
     "types": {

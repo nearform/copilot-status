@@ -18,7 +18,7 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
 
   const dailyQuota = quota.unlimited
     ? null
-    : getDailyQuotaInsight(quota.remainingQuota, quota.resetDate);
+    : getDailyQuotaInsight(quota.remainingQuota, quota.resetDate, quota.usedQuota);
 
   return (
     <ScrollView
@@ -50,10 +50,10 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
               </View>
               <View style={styles.halfWidth}>
                 <StatsCard
-                  icon="trending-down-outline"
-                  label={t('quota.dailyAverage')}
+                  icon="trending-up-outline"
+                  label={t('quota.dailyBudgetUsed')}
                   value={t('quota.perDay', {
-                    count: dailyQuota.dailyAverage,
+                    count: dailyQuota.dailyBudgetUsed,
                   })}
                   color={theme.colors.tint}
                 />
@@ -83,6 +83,16 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
                   icon="time-outline"
                   label={t('quota.daysRemaining')}
                   value={dailyQuota.daysRemaining}
+                  color={theme.colors.tint}
+                />
+              </View>
+              <View style={styles.halfWidth}>
+                <StatsCard
+                  icon="trending-down-outline"
+                  label={t('quota.dailyBudgetLeft')}
+                  value={t('quota.perDay', {
+                    count: dailyQuota.dailyAverage,
+                  })}
                   color={theme.colors.tint}
                 />
               </View>
