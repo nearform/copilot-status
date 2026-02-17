@@ -62,24 +62,6 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
             <View style={styles.row}>
               <View style={styles.halfWidth}>
                 <StatsCard
-                  icon="stop-circle"
-                  label={t('quota.totalLimit')}
-                  value={quota.totalQuota}
-                  color={theme.colors.critical}
-                />
-              </View>
-              <View style={styles.halfWidth}>
-                <StatsCard
-                  icon="code-working-outline"
-                  label={t('quota.remaining')}
-                  value={quota.remainingQuota}
-                  color={theme.colors.warning}
-                />
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View style={styles.halfWidth}>
-                <StatsCard
                   icon="time-outline"
                   label={t('quota.daysRemaining')}
                   value={dailyQuota.daysRemaining}
@@ -94,6 +76,24 @@ export function QuotaValues({ quota, onRefresh, isRefreshing }: QuotaValuesProps
                     count: dailyQuota.dailyAverage,
                   })}
                   color={theme.colors.tint}
+                />
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.halfWidth}>
+                <StatsCard
+                  icon="stop-circle"
+                  label={t('quota.totalLimit')}
+                  value={quota.totalQuota}
+                  color={theme.colors.critical}
+                />
+              </View>
+              <View style={styles.halfWidth}>
+                <StatsCard
+                  icon="code-working-outline"
+                  label={t('quota.remaining')}
+                  value={quota.remainingQuota}
+                  color={theme.colors.warning}
                 />
               </View>
             </View>
