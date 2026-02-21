@@ -31,9 +31,10 @@ jobs:
         run: npm ci
 
       - name: Create .env file
-        run: |
-          echo "GITHUB_CLIENT_ID=${{ secrets.CLIENT_ID }}" > .env
-          echo "GITHUB_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
+        uses: ./.github/actions/create-env-file
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
 
       - name: Extract version from release tag
         id: version
@@ -90,9 +91,10 @@ jobs:
         run: npm ci
 
       - name: Create .env file
-        run: |
-          echo "GITHUB_CLIENT_ID=${{ secrets.CLIENT_ID }}" > .env
-          echo "GITHUB_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
+        uses: ./.github/actions/create-env-file
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
 
       - name: Extract version from release tag
         id: version
