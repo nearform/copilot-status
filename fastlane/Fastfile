@@ -1,0 +1,112 @@
+require "base64"
+
+IOS_BUNDLE_IDENTIFIER = "xyz.ilteoood.copilotstatus"
+ANDROID_PACKAGE_NAME = "xyz.ilteoood.copilotstatus"
+
+platform :ios do
+  desc "Build and upload to App Store"
+  lane :release do |options|
+    version_name = options[:version_name]
+
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["APP_STORE_CONNECT_API_KEY"]),
+    )
+
+    build_number = begin
+      latest_testflight_build_number(
+        api_key: api_key,
+        app_identifier: IOS_BUNDLE_IDENTIFIER,
+      ) + 1
+    rescue => e
+      UI.important("Could not fetch TestFlight build number (#{e.message}), defaulting to 1")
+      1
+    end
+
+    match(
+      type: "appstore",
+      app_identifier: IOS_BUNDLE_IDENTIFIER,
+      git_url: ENV["MATCH_GIT_URL"],
+      readonly: true,
+      api_key: api_key,
+    )
+
+    increment_version_number(
+      version_number: version_name,
+      xcodeproj: "ios/copilot-status.xcodeproj",
+    )
+
+    increment_build_number(
+      build_number: build_number,
+      xcodeproj: "ios/copilot-status.xcodeproj",
+    )
+
+    gym(
+      workspace: "ios/copilot-status.xcworkspace",
+      scheme: "copilot-status",
+      export_method: "app-store",
+      configuration: "Release",
+    )
+
+    pilot(
+      api_key: api_key,
+      app_identifier: IOS_BUNDLE_IDENTIFIER,
+      skip_waiting_for_build_processing: true,
+    )
+  end
+end
+
+platform :android do
+  desc "Build and upload to Google Play"
+  lane :release do |options|
+    version_name = options[:version_name]
+
+    build_number = begin
+      google_play_track_version_codes(
+        package_name: ANDROID_PACKAGE_NAME,
+        track: "production",
+        json_key_data: Base64.decode64(ENV["GOOGLE_PLAY_JSON_KEY"]),
+      ).max + 1
+    rescue => e
+      UI.important("Could not fetch Google Play version codes (#{e.message}), defaulting to 1")
+      1
+    end
+
+    android_set_version_code(
+      version_code: build_number,
+      gradle_file: "android/app/build.gradle",
+    )
+
+    android_set_version_name(
+      version_name: version_name,
+      gradle_file: "android/app/build.gradle",
+    )
+
+    keystore_path = "/tmp/release.keystore"
+    begin
+      File.binwrite(keystore_path, Base64.decode64(ENV["ANDROID_KEYSTORE"]))
+
+      gradle(
+        task: "bundle",
+        build_type: "Release",
+        project_dir: "android/",
+        properties: {
+          "android.injected.signing.store.file" => keystore_path,
+          "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+          "android.injected.signing.key.alias" => ENV["ANDROID_KEY_ALIAS"],
+          "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"],
+        },
+      )
+
+      supply(
+        package_name: ANDROID_PACKAGE_NAME,
+        track: "internal",
+        aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+        json_key_data: Base64.decode64(ENV["GOOGLE_PLAY_JSON_KEY"]),
+      )
+    ensure
+      File.delete(keystore_path) if File.exist?(keystore_path)
+    end
+  end
+end
