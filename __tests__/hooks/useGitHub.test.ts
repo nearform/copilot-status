@@ -46,41 +46,5 @@ describe('hooks/useGitHub', () => {
       const options = mockedUseQuery.mock.calls[0][0];
       expect(options.queryKey).toEqual(['github', 'copilot', 'quota']);
     });
-
-    it('should report isCached when fetching with existing data', () => {
-      mockedUseQuery.mockReturnValue({
-        data: { premium_interactions: {} },
-        isStale: false,
-        isFetching: true,
-      });
-
-      const result = useCopilotQuota();
-
-      expect(result.isCached).toBe(true);
-    });
-
-    it('should not report isCached when not fetching', () => {
-      mockedUseQuery.mockReturnValue({
-        data: { premium_interactions: {} },
-        isStale: false,
-        isFetching: false,
-      });
-
-      const result = useCopilotQuota();
-
-      expect(result.isCached).toBe(false);
-    });
-
-    it('should not report isCached when fetching without data', () => {
-      mockedUseQuery.mockReturnValue({
-        data: undefined,
-        isStale: false,
-        isFetching: true,
-      });
-
-      const result = useCopilotQuota();
-
-      expect(result.isCached).toBe(false);
-    });
   });
 });

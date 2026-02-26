@@ -30,8 +30,5 @@ export function useCopilotQuota() {
     },
   });
 
-  return {
-    ...query,
-    isCached: query.isFetching && !!query.data,
-  };
+  return query;
 }

@@ -7,13 +7,11 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 interface CachedBannerProps {
   lastFetch: Date;
-  visible: boolean;
 }
 
-export function CachedBanner({ lastFetch, visible }: CachedBannerProps) {
+export function CachedBanner({ lastFetch }: CachedBannerProps) {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
-  if (!visible) return null;
 
   return (
     <View style={styles.banner}>

@@ -15,7 +15,7 @@ interface QuotaScreenProps {
 export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
-  const { data: quotas, isFetching, error, isCached, refetch } = useCopilotQuota();
+  const { data: quotas, isFetching, error, refetch } = useCopilotQuota();
 
   if (isFetching) {
     return (
@@ -47,7 +47,7 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
 
   return (
     <>
-      <CachedBanner lastFetch={quota.lastUpdated} visible={isCached} />
+      <CachedBanner lastFetch={quota.lastUpdated} />
       <View style={styles.content}>
         <QuotaValues quota={quota} onRefresh={refetch} isRefreshing={isFetching} />
       </View>
