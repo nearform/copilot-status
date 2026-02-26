@@ -15,9 +15,9 @@ export function CachedBanner({ lastFetch }: CachedBannerProps) {
 
   return (
     <View style={styles.banner}>
-      <Ionicons name="cloud-offline-outline" size={16} color={theme.colors.icon} />
+      <Ionicons name="refresh-outline" size={16} color={theme.colors.icon} />
       <Text style={styles.text}>
-        {t('cached.usingCachedData')} · {t('cached.updated')} {formatTime(t, lastFetch)}
+        {t('cached.updated')} {formatTime(t, lastFetch)}
       </Text>
     </View>
   );
