@@ -19,7 +19,8 @@ export function CircularProgress({ quota, size = 360 }: CircularProgressProps) {
   const { t } = useTranslation();
   const [showAvailable, setShowAvailable] = useState(false);
 
-  const { consumedPercent, remainingPercent } = quota;
+  const consumedPercent = Math.min(quota.consumedPercent, 100);
+  const remainingPercent = Math.max(0, quota.remainingPercent);
 
   const color = getColorByPercent(consumedPercent, theme.colors);
   const availableColor = getAvailableColorByPercent(remainingPercent, theme.colors);
