@@ -206,7 +206,7 @@ Parallel Speedup: ~50% faster than sequential
 - [ ] 1. Project Setup & Dependencies
 
   **What to do**:
-  - Update app.json: scheme to `xyz.ilteoood.copilotstatus`
+  - Update app.json: scheme to `com.nearform.copilotstatus`
   - Update app.json: Add iOS bundle identifier and Android package
   - Update app.json: Add App Groups entitlement for iOS widgets
   - Update app.json: Add expo-background-task plugin config
@@ -252,7 +252,7 @@ Parallel Speedup: ~50% faster than sequential
 
   # Verify app.json scheme updated
   cat app.json | grep '"scheme"'
-  # Expected: "xyz.ilteoood.copilotstatus"
+  # Expected: "com.nearform.copilotstatus"
 
   # Verify plugins configured
   cat app.json | grep -A2 '"plugins"'
@@ -374,7 +374,7 @@ Parallel Speedup: ~50% faster than sequential
   - Create `/stores/auth.ts` Zustand store:
     - State: `isAuthenticated`, `isLoading`, `user`
     - Actions: `signIn`, `signOut`, `checkAuth`
-  - Configure redirect URI: `xyz.ilteoood.copilotstatus://oauth`
+  - Configure redirect URI: `com.nearform.copilotstatus://oauth`
 
   **Must NOT do**:
   - DO NOT implement refresh token flow (GitHub tokens are long-lived)
@@ -821,7 +821,7 @@ Parallel Speedup: ~50% faster than sequential
     - Set Apple Team ID placeholder: `[APPLE_TEAM_ID]`
   - Create helper to write data to App Groups:
     - Use react-native-shared-group-preferences
-    - Group ID: `group.xyz.ilteoood.copilotstatus`
+    - Group ID: `group.com.nearform.copilotstatus`
 
   **Must NOT do**:
   - DO NOT implement Live Activities

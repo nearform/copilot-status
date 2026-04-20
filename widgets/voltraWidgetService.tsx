@@ -23,7 +23,7 @@ import {
 import { createWidgetStyles } from './widgetStyles';
 
 const WIDGET_ID = 'copilot_status';
-const DEEP_LINK_URL = 'xyz.ilteoood.copilotstatus://';
+const DEEP_LINK_URL = 'com.nearform.copilotstatus://';
 
 function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch: number | null } {
   const queryState = queryClient.getQueryState<AllQuotas>(QUERY_KEYS.COPILOT_QUOTA);

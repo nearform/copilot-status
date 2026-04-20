@@ -35,7 +35,7 @@ A mobile app to monitor your GitHub Copilot usage quota with native home screen 
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/ilteoood/copilot-status.git
+git clone https://github.com/nearform/copilot-status.git
 cd copilot-status
 npm install
 ```
@@ -57,7 +57,7 @@ To get these credentials:
 
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Create a new OAuth App
-3. Set the callback URL to: `xyz.ilteoood.copilotstatus://`
+3. Set the callback URL to: `com.nearform.copilotstatus://`
 
 ### 3. iOS Setup
 
@@ -66,7 +66,7 @@ For iOS widgets to work, you need to:
 1. Run `npx expo prebuild` to generate the native project
 2. Open the project in Xcode
 3. Enable the App Groups capability for both the main app and the widget extension
-4. Use the App Group: `group.xyz.ilteoood.copilotstatus`
+4. Use the App Group: `group.com.nearform.copilotstatus`
 
 The widget configuration (ID, display name, supported families) is defined in the [Voltra plugin section of `app.json`](./app.json).
 

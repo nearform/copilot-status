@@ -5,13 +5,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "xyz.ilteoood.copilotstatus",
+    "scheme": "com.nearform.copilotstatus",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "xyz.ilteoood.copilotstatus",
+      "bundleIdentifier": "com.nearform.copilotstatus",
       "entitlements": {
-        "com.apple.security.application-groups": ["group.xyz.ilteoood.copilotstatus"]
+        "com.apple.security.application-groups": ["group.com.nearform.copilotstatus"]
       }
     },
     "android": {
@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "xyz.ilteoood.copilotstatus"
+      "package": "com.nearform.copilotstatus"
     },
     "plugins": [
       "expo-router",
@@ -50,7 +50,7 @@
       [
         "voltra",
         {
-          "groupIdentifier": "group.xyz.ilteoood.copilotstatus",
+          "groupIdentifier": "group.com.nearform.copilotstatus",
           "widgets": [
             {
               "id": "copilot_status",
