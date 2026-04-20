@@ -61,10 +61,10 @@
     "cancel": "Cancel",
     "sourceCode": "Source Code",
     "github": "GitHub.com",
-    "repoLink": "https://github.com/ilteoood/copilot-status",
+    "repoLink": "https://github.com/nearform/copilot-status",
     "author": "Author",
-    "authorName": "@ilteoood",
-    "authorProfile": "https://github.com/ilteoood",
+    "authorName": "@nearform",
+    "authorProfile": "https://github.com/nearform",
     "disclaimer": "This app is not affiliated with or endorsed by GitHub."
   },
   "widget": {

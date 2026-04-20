@@ -41,7 +41,7 @@ GitHub Copilot Status is a cross-platform mobile application that enables users 
 **Technical Implementation**:
 
 - Opens system browser for GitHub login (not in-app WebView)
-- Custom URL scheme callback: `xyz.ilteoood.copilotstatus://oauth`
+- Custom URL scheme callback: `com.nearform.copilotstatus://oauth`
 - Manual token exchange via Dio HTTP client
 - Requires GitHub OAuth App with Client ID and Client Secret
 
@@ -156,7 +156,7 @@ GitHub Copilot Status is a cross-platform mobile application that enables users 
 
 **Data Source**:
 
-- App Group: `group.xyz.ilteoood.copilotstatus`
+- App Group: `group.com.nearform.copilotstatus`
 - Shared UserDefaults key: `flutter.quotaInfo`
 - JSON format: `QuotaData` struct
 
@@ -359,7 +359,7 @@ Widgets Auto-Update
 **3. iOS App Group UserDefaults**
 
 - **Purpose**: Widget data for iOS
-- **Group**: `group.xyz.ilteoood.copilotstatus`
+- **Group**: `group.com.nearform.copilotstatus`
 - **Key**: `flutter.quotaInfo`
 - **Format**: JSON string of `QuotaData`
 - **Access**: Flutter app + iOS WidgetExtension
@@ -551,7 +551,7 @@ User-Agent: GitHubCopilotChat/0.26.7
 
 **GitHub OAuth App Configuration**:
 
-- Authorization callback URL: `xyz.ilteoood.copilotstatus://oauth`
+- Authorization callback URL: `com.nearform.copilotstatus://oauth`
 - Application name: (User's choice)
 - Homepage URL: (Optional)
 - Scopes: `read:org`, `read:user`
@@ -576,12 +576,12 @@ User-Agent: GitHubCopilotChat/0.26.7
 
 **App Groups**:
 
-- Group ID: `group.xyz.ilteoood.copilotstatus`
+- Group ID: `group.com.nearform.copilotstatus`
 - Targets: Runner (main app) + WidgetExtension
 
 **Info.plist** (automatically generated):
 
-- URL Schemes: `xyz.ilteoood.copilotstatus`
+- URL Schemes: `com.nearform.copilotstatus`
 - LSApplicationQueriesSchemes: For URL scheme checks
 
 ---
