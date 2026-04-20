@@ -141,29 +141,4 @@ describe('CircularProgress', () => {
     expect(screen.getByText('0%')).toBeTruthy();
     expect(screen.getByText('AVAILABLE')).toBeTruthy();
   });
-
-  it('clamps values when usage exceeds quota', () => {
-    const quota: QuotaInfo = {
-      type: 'premium_interactions',
-      totalQuota: 100,
-      remainingQuota: -50,
-      usedQuota: 150,
-      remainingPercent: -50,
-      consumedPercent: 150,
-      resetDate: new Date(),
-      unlimited: false,
-      lastUpdated: new Date(),
-    };
-
-    render(<CircularProgress quota={quota} size={200} />);
-
-    expect(screen.getByText('100%')).toBeTruthy();
-    expect(screen.getByText('USED')).toBeTruthy();
-
-    const pressable = screen.getByRole('button');
-    fireEvent.press(pressable);
-
-    expect(screen.getByText('0%')).toBeTruthy();
-    expect(screen.getByText('AVAILABLE')).toBeTruthy();
-  });
 });

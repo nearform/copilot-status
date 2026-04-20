@@ -190,6 +190,39 @@ describe('services/api', () => {
       expect(withQuotas.premium_interactions.remainingPercent).toBe(25);
     });
 
+    it('should clamp percent values when usage exceeds quota', async () => {
+      const mockResponse: GitHubCopilotResponse = {
+        ...mockCopilotResponse,
+        quota_snapshots: {
+          premium_interactions: createMockQuotaSnapshot('premium_interactions', 1000, -500, -50),
+          chat: createMockQuotaSnapshot('chat', 500, -100, -20),
+          completions: createMockQuotaSnapshot('completions', 300, -50, -16.67),
+        },
+      };
+
+      const mockRequest = jest.fn().mockResolvedValue({ data: mockResponse });
+
+      const MockedOctokit = jest.mocked(Octokit);
+      MockedOctokit.mockImplementation(
+        () =>
+          ({
+            request: mockRequest,
+          }) as unknown as InstanceType<typeof Octokit>
+      );
+
+      const result = await fetchCopilotQuota('test-token');
+      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+
+      expect(withQuotas.premium_interactions.remainingPercent).toBe(0);
+      expect(withQuotas.premium_interactions.consumedPercent).toBe(100);
+
+      expect(withQuotas.chat.remainingPercent).toBe(0);
+      expect(withQuotas.chat.consumedPercent).toBe(100);
+
+      expect(withQuotas.completions.remainingPercent).toBe(0);
+      expect(withQuotas.completions.consumedPercent).toBe(100);
+    });
+
     it('should throw error if API call fails', async () => {
       const mockError = new Error('API Error');
       const mockRequest = jest.fn().mockRejectedValue(mockError);
