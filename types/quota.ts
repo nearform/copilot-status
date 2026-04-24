@@ -14,15 +14,21 @@ export interface QuotaInfo {
   lastUpdated: Date;
 }
 
-interface WithQuotas {
+export interface PaidQuotas {
   hasSubscription: true;
   premium_interactions: QuotaInfo;
   chat: QuotaInfo;
   completions: QuotaInfo;
 }
 
-interface WithoutQuotas {
+interface FreeQuotas {
+  hasSubscription: true;
+  chat: QuotaInfo;
+  completions: QuotaInfo;
+}
+
+interface NoQuotas {
   hasSubscription: false;
 }
 
-export type AllQuotas = WithQuotas | WithoutQuotas;
+export type AllQuotas = PaidQuotas | FreeQuotas | NoQuotas;

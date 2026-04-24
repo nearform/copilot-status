@@ -30,8 +30,10 @@ function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch
   const githubUser = queryClient.getQueryData<GitHubUser>(QUERY_KEYS.GITHUB_USER);
 
   const data = queryState?.data;
+  const quota = (data?.hasSubscription && ('premium_interactions' in data ? data.premium_interactions : data.chat)) || null;
+
   return {
-    quota: data?.hasSubscription ? data.premium_interactions : null,
+    quota,
     username: githubUser?.login ?? '',
     lastFetch: queryState?.dataUpdatedAt ?? null,
   };

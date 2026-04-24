@@ -15,7 +15,7 @@ export async function fetchGitHubUser(token: string): Promise<GitHubUser> {
 
 function parseQuotaSnapshot(
   quotaType: QuotaType,
-  snapshot: GitHubCopilotResponse['quota_snapshots'][QuotaType],
+  snapshot: NonNullable<GitHubCopilotResponse['quota_snapshots']>[QuotaType],
   resetDate: Date
 ): QuotaInfo {
   return {
@@ -31,26 +31,69 @@ function parseQuotaSnapshot(
   };
 }
 
+function parseFreeQuotaSnapshot(
+  quotaType: 'chat' | 'completions',
+  remaining: number,
+  total: number,
+  resetDate: Date
+): QuotaInfo {
+  const used = total - remaining;
+  const percentRemaining = total > 0 ? (remaining / total) * 100 : 0;
+  return {
+    type: quotaType,
+    totalQuota: total,
+    remainingQuota: remaining,
+    usedQuota: used,
+    remainingPercent: Math.max(0, percentRemaining),
+    consumedPercent: Math.min(100, 100 - percentRemaining),
+    resetDate,
+    unlimited: false,
+    lastUpdated: new Date(),
+  };
+}
+
 function parseQuotaResponse(response: GitHubCopilotResponse): AllQuotas {
-  const resetDate = new Date(response.quota_reset_date_utc);
   const hasSubscription = response.access_type_sku !== 'no_access';
 
-  return hasSubscription
-    ? {
-        hasSubscription,
-        premium_interactions: parseQuotaSnapshot(
-          'premium_interactions',
-          response.quota_snapshots.premium_interactions,
-          resetDate
-        ),
-        chat: parseQuotaSnapshot('chat', response.quota_snapshots.chat, resetDate),
-        completions: parseQuotaSnapshot(
-          'completions',
-          response.quota_snapshots.completions,
-          resetDate
-        ),
-      }
-    : { hasSubscription };
+  if (!hasSubscription) {
+    return { hasSubscription: false };
+  }
+
+  // Paid tier: has quota_snapshots
+  if (response.quota_snapshots) {
+    const resetDate = new Date(response.quota_reset_date_utc!);
+    return {
+      hasSubscription: true,
+      premium_interactions: parseQuotaSnapshot(
+        'premium_interactions',
+        response.quota_snapshots.premium_interactions,
+        resetDate
+      ),
+      chat: parseQuotaSnapshot('chat', response.quota_snapshots.chat, resetDate),
+      completions: parseQuotaSnapshot(
+        'completions',
+        response.quota_snapshots.completions,
+        resetDate
+      ),
+    };
+  }
+
+  // Free tier: limited_user_quotas = remaining, monthly_quotas = total limits
+  if (response.monthly_quotas) {
+    const remaining = response.limited_user_quotas ?? response.monthly_quotas;
+    const total = response.monthly_quotas;
+    const resetDate = response.limited_user_reset_date
+      ? new Date(response.limited_user_reset_date)
+      : new Date();
+
+    return {
+      hasSubscription: true,
+      chat: parseFreeQuotaSnapshot('chat', remaining.chat, total.chat, resetDate),
+      completions: parseFreeQuotaSnapshot('completions', remaining.completions, total.completions, resetDate),
+    };
+  }
+
+  return { hasSubscription: false };
 }
 
 export async function fetchCopilotQuota(token: string): Promise<AllQuotas> {

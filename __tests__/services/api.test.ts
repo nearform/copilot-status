@@ -1,6 +1,6 @@
 import { fetchCopilotQuota, fetchGitHubUser } from '@/services/api';
 import type { GitHubCopilotResponse } from '@/types/api';
-import type { AllQuotas } from '@/types/quota';
+import type { PaidQuotas } from '@/types/quota';
 import { Octokit } from '@octokit/rest';
 
 jest.mock('@/services/storage');
@@ -119,7 +119,7 @@ describe('services/api', () => {
       expect(mockRequest).toHaveBeenCalledWith('GET /copilot_internal/user');
       expect(result.hasSubscription).toBe(true);
 
-      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+      const withQuotas = result as PaidQuotas;
 
       expect(withQuotas.premium_interactions).toEqual({
         type: 'premium_interactions',
@@ -182,7 +182,7 @@ describe('services/api', () => {
 
       expect(result.hasSubscription).toBe(true);
 
-      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+      const withQuotas = result as PaidQuotas;
 
       expect(withQuotas.premium_interactions.usedQuota).toBe(1500);
       expect(withQuotas.premium_interactions.totalQuota).toBe(2000);
@@ -211,7 +211,7 @@ describe('services/api', () => {
       );
 
       const result = await fetchCopilotQuota('test-token');
-      const withQuotas = result as Extract<AllQuotas, { hasSubscription: true }>;
+      const withQuotas = result as PaidQuotas;
 
       expect(withQuotas.premium_interactions.remainingPercent).toBe(0);
       expect(withQuotas.premium_interactions.consumedPercent).toBe(100);
