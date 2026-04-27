@@ -5,14 +5,19 @@ export interface GitHubCopilotResponse {
   assigned_date: string;
   can_signup_for_limited: boolean;
   chat_enabled: boolean;
-  codex_agent_enabled: boolean;
+  codex_agent_enabled?: boolean;
   copilot_plan: string;
   endpoints: Endpoints;
   organization_list: unknown[];
   organization_login_list: unknown[];
-  quota_reset_date: string;
-  quota_reset_date_utc: string;
-  quota_snapshots: QuotaSnapshots;
+  quota_reset_date?: string;
+  quota_reset_date_utc?: string;
+  quota_snapshots?: QuotaSnapshots;
+  // Free tier fields
+  limited_user_quotas?: LimitedUserQuotas;
+  limited_user_subscribed_day?: number;
+  limited_user_reset_date?: string;
+  monthly_quotas?: LimitedUserQuotas;
 }
 
 interface Endpoints {
@@ -38,4 +43,9 @@ interface Quota<T> {
   remaining: number;
   timestamp_utc: string;
   unlimited: boolean;
+}
+
+interface LimitedUserQuotas {
+  chat: number;
+  completions: number;
 }

@@ -3,7 +3,7 @@
 import { CachedBanner } from '@/components/CachedBanner';
 import { QuotaValues } from '@/components/QuotaValues';
 import { useCopilotQuota } from '@/hooks/useGitHub';
-import type { QuotaType } from '@/types/quota';
+import type { QuotaInfo, QuotaType } from '@/types/quota';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -43,7 +43,17 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
     );
   }
 
-  const quota = quotas[quotaType];
+  if (!(quotaType in quotas)) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>
+          {t('dashboard.quotaNotAvailable', { type: t(`quota.types.${quotaType}`) })}
+        </Text>
+      </View>
+    );
+  }
+
+  const quota = (quotas as Record<QuotaType, QuotaInfo>)[quotaType];
 
   return (
     <>

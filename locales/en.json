@@ -13,7 +13,8 @@
     "title": "Copilot Status",
     "loadingQuota": "Loading quota...",
     "unableToLoad": "Unable to load quota",
-    "noSubscription": "User does not have a Copilot subscription"
+    "noSubscription": "User does not have a Copilot subscription",
+    "quotaNotAvailable": "{{type}} are not included in your current plan"
   },
   "quota": {
     "used": "Used",

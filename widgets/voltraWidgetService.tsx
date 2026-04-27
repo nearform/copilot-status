@@ -6,6 +6,7 @@ import type { AllQuotas, QuotaInfo } from '@/types/quota';
 import { getAvailableColorByPercent, getColorByPercent } from '@/utils/colorUtils';
 import { formatFullDate } from '@/utils/dateTimeUtils';
 import { formatPercent } from '@/utils/numberUtils';
+import { hasPremiumQuota } from '@/utils/quotaUtils';
 import { Platform } from 'react-native';
 import { VoltraAndroid } from 'voltra/android';
 import {
@@ -30,8 +31,10 @@ function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch
   const githubUser = queryClient.getQueryData<GitHubUser>(QUERY_KEYS.GITHUB_USER);
 
   const data = queryState?.data;
+  const quota = hasPremiumQuota(data) ? data.premium_interactions : data?.hasSubscription ? data.chat : null;
+
   return {
-    quota: data?.hasSubscription ? data.premium_interactions : null,
+    quota,
     username: githubUser?.login ?? '',
     lastFetch: queryState?.dataUpdatedAt ?? null,
   };
