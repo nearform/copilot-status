@@ -44,7 +44,13 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
   }
 
   if (!(quotaType in quotas)) {
-    return null;
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>
+          {t('dashboard.quotaNotAvailable', { type: t(`quota.types.${quotaType}`) })}
+        </Text>
+      </View>
+    );
   }
 
   const quota = (quotas as Record<QuotaType, QuotaInfo>)[quotaType];

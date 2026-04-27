@@ -14,17 +14,14 @@ export interface QuotaInfo {
   lastUpdated: Date;
 }
 
-export interface PaidQuotas {
-  hasSubscription: true;
-  premium_interactions: QuotaInfo;
-  chat: QuotaInfo;
-  completions: QuotaInfo;
-}
-
 interface FreeQuotas {
   hasSubscription: true;
   chat: QuotaInfo;
   completions: QuotaInfo;
+}
+
+export interface PaidQuotas extends FreeQuotas {
+  premium_interactions: QuotaInfo;
 }
 
 interface NoQuotas {
