@@ -37,9 +37,10 @@ jobs:
         uses: android-actions/setup-android@v4
 
       - name: Create .env file
-        run: |
-          echo "GITHUB_CLIENT_ID=${{ secrets.CLIENT_ID }}" > .env
-          echo "GITHUB_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
+        uses: ./.github/actions/create-env-file
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
 
       - name: Generate native Android code
         run: npx expo prebuild --platform android --clean

@@ -1,0 +1,19 @@
+name: Create .env file
+description: Creates the .env file with the GitHub OAuth credentials
+
+inputs:
+  client-id:
+    description: GitHub OAuth client ID
+    required: true
+  client-secret:
+    description: GitHub OAuth client secret
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Create .env file
+      shell: bash
+      run: |
+        echo "GITHUB_CLIENT_ID=${{ inputs.client-id }}" > .env
+        echo "GITHUB_CLIENT_SECRET=${{ inputs.client-secret }}" >> .env
