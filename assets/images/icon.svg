@@ -20,7 +20,7 @@
   <!-- Circular Border with Gradient -->
   <circle cx="512" cy="512" r="410" stroke="url(#ringGradient)" stroke-width="48" fill="none" filter="url(#outerGlow)"/>
 
-  <!-- Mascot (GitHub Copilot Robot inspired) -->
+  <!-- Mascot (Robot design) -->
   <g filter="url(#mascotShadow)">
     <!-- Main Head Shape (Rounded Helmet) -->
     <defs>

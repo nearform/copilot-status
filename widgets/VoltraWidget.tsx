@@ -18,7 +18,7 @@ export function getTheme(): Theme {
   return useThemeStore.getState().isDarkMode() ? themes.dark : themes.light;
 }
 
-export function IOSCopilotWidget({ quota, username }: WidgetData) {
+export function IOSWidget({ quota, username }: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
   const consumedColor = getColorByPercent(quota.consumedPercent, theme.colors);
@@ -90,7 +90,7 @@ export function IOSCopilotWidget({ quota, username }: WidgetData) {
   };
 }
 
-export function IOSCopilotWidgetLoading() {
+export function IOSWidgetLoading() {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
 
@@ -106,7 +106,7 @@ export function IOSCopilotWidgetLoading() {
   };
 }
 
-export function IOSCopilotWidgetError() {
+export function IOSWidgetError() {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
 
@@ -122,10 +122,10 @@ export function IOSCopilotWidgetError() {
 }
 
 /**
- * Android Copilot Widget - uses VoltraAndroid components
+ * Android Widget - uses VoltraAndroid components
  * Maps to Jetpack Compose Glance on Android (Column, Row, Text)
  */
-export function AndroidCopilotWidget({ quota, username }: WidgetData) {
+export function AndroidWidget({ quota, username }: WidgetData) {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
   const consumedColor = getColorByPercent(quota.consumedPercent, theme.colors);
@@ -175,7 +175,7 @@ export function AndroidCopilotWidget({ quota, username }: WidgetData) {
   );
 }
 
-export function AndroidCopilotWidgetLoading() {
+export function AndroidWidgetLoading() {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
 
@@ -190,7 +190,7 @@ export function AndroidCopilotWidgetLoading() {
   );
 }
 
-export function AndroidCopilotWidgetError() {
+export function AndroidWidgetError() {
   const theme = getTheme();
   const styles = createWidgetStyles(theme);
 

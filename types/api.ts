@@ -1,5 +1,5 @@
-// GitHub Copilot API response structure
-export interface GitHubCopilotResponse {
+// GitHub API response structure
+export interface GitHubQuotaResponse {
   access_type_sku: string;
   analytics_tracking_id: string;
   assigned_date: string;

@@ -1,6 +1,6 @@
 import { queryClient } from '@/services/queryClient';
 import { useQuotaStore } from '@/stores/quota';
-import { clearCopilotWidget } from '@/widgets/voltraWidgetService';
+import { clearAppWidget } from '@/widgets/voltraWidgetService';
 
 jest.mock('@/services/queryClient', () => ({
   queryClient: {
@@ -9,7 +9,7 @@ jest.mock('@/services/queryClient', () => ({
 }));
 
 jest.mock('@/widgets/voltraWidgetService', () => ({
-  clearCopilotWidget: jest.fn(),
+  clearAppWidget: jest.fn(),
 }));
 
 describe('stores/quota', () => {
@@ -25,11 +25,11 @@ describe('stores/quota', () => {
       expect(queryClient.clear).toHaveBeenCalled();
     });
 
-    it('should clear copilot widget when clearQuota is called', () => {
+    it('should clear widget when clearQuota is called', () => {
       const store = useQuotaStore();
       store.clearQuota();
 
-      expect(clearCopilotWidget).toHaveBeenCalled();
+      expect(clearAppWidget).toHaveBeenCalled();
     });
   });
 });

@@ -1,9 +1,9 @@
 import { queryClient } from '@/services/queryClient';
-import { clearCopilotWidget } from '@/widgets/voltraWidgetService';
+import { clearAppWidget } from '@/widgets/voltraWidgetService';
 
 export const useQuotaStore = () => ({
   clearQuota: () => {
     queryClient.clear();
-    clearCopilotWidget();
+    clearAppWidget();
   },
 });

@@ -1,4 +1,4 @@
-import { updateCopilotWidget } from '@/widgets/voltraWidgetService';
+import { updateAppWidget } from '@/widgets/voltraWidgetService';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 import { storage } from './storage';
@@ -37,7 +37,7 @@ export const queryClient = new QueryClient({
     },
   },
   queryCache: new QueryCache({
-    onSuccess: updateCopilotWidget,
+    onSuccess: updateAppWidget,
   }),
 });
 

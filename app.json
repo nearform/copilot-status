@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Copilot Status",
-    "slug": "copilot-status",
+    "name": "CodeMeter",
+    "slug": "codemeter",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,7 +11,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.nearform.copilotstatus",
       "entitlements": {
-        "com.apple.security.application-groups": ["group.com.nearform.copilotstatus"]
+        "com.apple.security.application-groups": [
+          "group.com.nearform.copilotstatus"
+        ]
       }
     },
     "android": {
@@ -21,7 +23,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.nearform.copilotstatus"
+      "package": "com.nearform.copilotstatusapp"
     },
     "plugins": [
       "expo-router",
@@ -53,18 +55,21 @@
           "groupIdentifier": "group.com.nearform.copilotstatus",
           "widgets": [
             {
-              "id": "copilot_status",
-              "displayName": "Copilot Status",
-              "description": "Monitor your GitHub Copilot usage quota",
-              "supportedFamilies": ["systemSmall", "systemMedium"]
+              "id": "code_meter",
+              "displayName": "CodeMeter",
+              "description": "Monitor your AI coding usage quota",
+              "supportedFamilies": [
+                "systemSmall",
+                "systemMedium"
+              ]
             }
           ],
           "android": {
             "widgets": [
               {
-                "id": "copilot_status",
-                "displayName": "Copilot Status",
-                "description": "Monitor your GitHub Copilot usage quota",
+                "id": "code_meter",
+                "displayName": "CodeMeter",
+                "description": "Monitor your AI coding usage quota",
                 "targetCellWidth": 4,
                 "targetCellHeight": 1,
                 "minWidth": 250,

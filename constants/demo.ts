@@ -1,18 +1,18 @@
 import type { GitHubUser } from '@/services/api';
 import type { AllQuotas, PaidQuotas } from '@/types/quota';
 
-export const DEMO_USERNAME = 'copilot-demo';
+export const DEMO_USERNAME = 'demo-user';
 
 export const DEMO_TOKEN = '__demo_token__';
 
 export const DEMO_USER: GitHubUser = {
-  login: 'copilot-demo',
+  login: 'demo-user',
   id: 0,
   node_id: '',
   avatar_url: 'https://avatars.githubusercontent.com/u/0?v=4',
   gravatar_id: '',
-  url: 'https://api.github.com/users/copilot-demo',
-  html_url: 'https://github.com/copilot-demo',
+  url: 'https://api.github.com/users/demo-user',
+  html_url: 'https://github.com/demo-user',
   followers_url: '',
   following_url: '',
   gists_url: '',
@@ -24,11 +24,11 @@ export const DEMO_USER: GitHubUser = {
   received_events_url: '',
   type: 'User',
   site_admin: false,
-  name: 'Copilot Demo',
+  name: 'Demo User',
   company: null,
   blog: '',
   location: null,
-  email: 'copilot-demo@example.com',
+  email: 'demo@example.com',
   hireable: null,
   bio: null,
   twitter_username: null,

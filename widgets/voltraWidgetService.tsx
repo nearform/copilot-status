@@ -17,13 +17,13 @@ import {
 import { clearWidget, updateWidget } from 'voltra/client';
 import {
   getTheme,
-  IOSCopilotWidget,
-  IOSCopilotWidgetError,
+  IOSWidget,
+  IOSWidgetError,
   type WidgetData,
-} from './VoltraCopilotWidget';
+} from './VoltraWidget';
 import { createWidgetStyles } from './widgetStyles';
 
-const WIDGET_ID = 'copilot_status';
+const WIDGET_ID = 'code_meter';
 const DEEP_LINK_URL = 'com.nearform.copilotstatus://';
 
 function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch: number | null } {
@@ -45,7 +45,7 @@ function getWidgetData(): { quota: QuotaInfo | null; username: string; lastFetch
  */
 function buildIOSWidgetVariants(quota: QuotaInfo | null, username: string) {
   if (!quota) {
-    return IOSCopilotWidgetError();
+    return IOSWidgetError();
   }
 
   const widgetData: WidgetData = {
@@ -53,7 +53,7 @@ function buildIOSWidgetVariants(quota: QuotaInfo | null, username: string) {
     quota,
   };
 
-  return IOSCopilotWidget(widgetData);
+  return IOSWidget(widgetData);
 }
 
 /**
@@ -141,10 +141,10 @@ function buildAndroidWidgetVariants(
 }
 
 /**
- * Updates the Copilot Status widget with current quota data
+ * Updates the app widget with current quota data
  * Uses platform-specific Voltra APIs
  */
-export async function updateCopilotWidget(): Promise<void> {
+export async function updateAppWidget(): Promise<void> {
   try {
     const { quota, username } = getWidgetData();
 
@@ -161,7 +161,7 @@ export async function updateCopilotWidget(): Promise<void> {
 /**
  * Clears the widget data, showing the sign-in required state
  */
-export async function clearCopilotWidget(): Promise<void> {
+export async function clearAppWidget(): Promise<void> {
   try {
     if (Platform.OS === 'ios') {
       await clearWidget(WIDGET_ID);
