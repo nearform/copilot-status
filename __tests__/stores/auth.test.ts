@@ -1,3 +1,4 @@
+import { LEGACY_DEMO_TOKEN } from '@/constants/sampleData';
 import { useAuthStore } from '@/stores/auth';
 import { exchangeCodeForToken } from '@/services/auth';
 import { clearAuthData, getStoredToken, storeToken } from '@/stores/secureStorage';
@@ -48,6 +49,27 @@ describe('stores/auth', () => {
       expect(state.isLoading).toBe(false);
     });
 
+    it('should mark auth as checked once complete', async () => {
+      (getStoredToken as jest.Mock).mockResolvedValue(null);
+      useAuthStore.setState({ hasCheckedAuth: false });
+
+      await useAuthStore.getState().checkAuth();
+
+      expect(useAuthStore.getState().hasCheckedAuth).toBe(true);
+    });
+
+    it('should clear a legacy demo token and treat the user as signed out', async () => {
+      (getStoredToken as jest.Mock).mockResolvedValue(LEGACY_DEMO_TOKEN);
+      (clearAuthData as jest.Mock).mockResolvedValue(undefined);
+
+      await useAuthStore.getState().checkAuth();
+
+      expect(clearAuthData).toHaveBeenCalled();
+      const state = useAuthStore.getState();
+      expect(state.isAuthenticated).toBe(false);
+      expect(state.hasCheckedAuth).toBe(true);
+    });
+
     it('should handle errors during checkAuth', async () => {
       (getStoredToken as jest.Mock).mockRejectedValue(new Error('Storage error'));
 
@@ -58,6 +80,7 @@ describe('stores/auth', () => {
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBe('Storage error');
+      expect(state.hasCheckedAuth).toBe(true);
     });
 
     it('should set isLoading to true during operation', async () => {

@@ -2,6 +2,7 @@
 
 import { CachedBanner } from '@/components/CachedBanner';
 import { QuotaValues } from '@/components/QuotaValues';
+import { SampleDataBanner } from '@/components/SampleDataBanner';
 import { useQuota } from '@/hooks/useUserData';
 import type { QuotaInfo, QuotaType } from '@/types/quota';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,7 @@ interface QuotaScreenProps {
 export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
-  const { data: quotas, isFetching, error, refetch } = useQuota();
+  const { data: quotas, isFetching, error, refetch, isSample } = useQuota();
 
   if (isFetching) {
     return (
@@ -57,7 +58,7 @@ export function QuotaDisplay({ quotaType }: QuotaScreenProps) {
 
   return (
     <>
-      <CachedBanner lastFetch={quota.lastUpdated} />
+      {isSample ? <SampleDataBanner /> : <CachedBanner lastFetch={quota.lastUpdated} />}
       <View style={styles.content}>
         <QuotaValues quota={quota} onRefresh={refetch} isRefreshing={isFetching} />
       </View>

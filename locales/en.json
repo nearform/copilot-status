@@ -38,15 +38,24 @@
   "cached": {
     "updated": "Updated"
   },
+  "sample": {
+    "title": "Showing sample data",
+    "message": "Connect your GitHub account to see your own Copilot usage.",
+    "connect": "Connect GitHub"
+  },
   "login": {
     "title": "Copilot Status",
     "subtitle": "Monitor your GitHub Copilot usage and quota in real-time",
     "signInButton": "Sign in with GitHub",
+    "notNow": "Not now",
     "footer": "Securely authenticate with your GitHub account to access your Copilot quota information."
   },
   "settings": {
     "title": "Settings",
     "signedInAs": "Signed in as @{{username}}",
+    "notConnected": "Not connected",
+    "notConnectedSubtitle": "Connect GitHub to see your Copilot usage",
+    "connectGitHub": "Connect GitHub",
     "appearance": "APPEARANCE",
     "light": "Light",
     "dark": "Dark",
