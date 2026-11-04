@@ -1,10 +1,16 @@
 import { LEGACY_DEMO_TOKEN } from '@/constants/sampleData';
 import { useAuthStore } from '@/stores/auth';
 import { exchangeCodeForToken } from '@/services/auth';
+import { queryClient, queryPersister } from '@/services/queryClient';
 import { clearAuthData, getStoredToken, storeToken } from '@/stores/secureStorage';
+import { clearCopilotWidget } from '@/widgets/voltraWidgetService';
 
 jest.mock('@/services/auth');
 jest.mock('@/stores/secureStorage');
+jest.mock('@/services/queryClient', () => ({
+  queryClient: { clear: jest.fn() },
+  queryPersister: { removeClient: jest.fn() },
+}));
 
 describe('stores/auth', () => {
   beforeEach(() => {
@@ -65,6 +71,9 @@ describe('stores/auth', () => {
       await useAuthStore.getState().checkAuth();
 
       expect(clearAuthData).toHaveBeenCalled();
+      expect(queryClient.clear).toHaveBeenCalled();
+      expect(queryPersister.removeClient).toHaveBeenCalled();
+      expect(clearCopilotWidget).toHaveBeenCalled();
       const state = useAuthStore.getState();
       expect(state.isAuthenticated).toBe(false);
       expect(state.hasCheckedAuth).toBe(true);
