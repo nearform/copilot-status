@@ -10,7 +10,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 export default function LoginScreen() {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
-  const [request, response, promptAsync] = useGitHubAuthRequest();
+  const [request, , promptAsync] = useGitHubAuthRequest();
   const { signIn, isLoading, error, clearError } = useAuthStore();
   const [localLoading, setLocalLoading] = useState(false);
 
@@ -32,26 +32,22 @@ export default function LoginScreen() {
     ]).start();
   }, []);
 
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { code } = response.params;
-      handleSignIn(code);
-    }
-    setLocalLoading(false);
-  }, [response]);
-
-  const handleSignIn = async (code: string) => {
-    try {
-      await signIn(code, request?.codeVerifier);
-    } catch {
-      setLocalLoading(false);
-    }
-  };
-
   const handlePress = async () => {
     clearError();
     setLocalLoading(true);
-    await promptAsync();
+    try {
+      // Handle the result here, not in an effect on `response`. On Android the
+      // OAuth redirect also arrives as a deep link, and Expo Router navigates to
+      // it, which can unmount this screen before such an effect runs.
+      const result = await promptAsync();
+      if (result.type === 'success') {
+        await signIn(result.params.code, request?.codeVerifier);
+      }
+    } catch {
+      // signIn records the error in the store for display.
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   const handleNotNow = () => {
