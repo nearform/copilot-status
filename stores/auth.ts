@@ -30,10 +30,13 @@ export const useAuthStore = create<AuthState>(set => {
       try {
         let token = await getStoredToken();
         if (token === LEGACY_DEMO_TOKEN) {
-          await clearAuthData();
+          // The old demo mode cached fake data under the real query keys.
+          // Purge it before removing the token, so an interrupted migration
+          // still finds the token and retries on next launch.
           queryClient.clear();
           await queryPersister.removeClient();
           await clearCopilotWidget();
+          await clearAuthData();
           token = null;
         }
         set({

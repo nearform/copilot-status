@@ -1,5 +1,6 @@
 import { SAMPLE_QUOTA } from '@/constants/sampleData';
-import { QUERY_KEYS, useQuota, useUser } from '@/hooks/useUserData';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import { useQuota, useUser } from '@/hooks/useUserData';
 import { fetchCopilotQuota, fetchGitHubUser } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { getStoredToken } from '@/stores/secureStorage';

@@ -52,6 +52,8 @@ export default function RootLayout() {
 
   // Gate only the startup token check. Gating on isLoading would unmount the
   // navigator during sign-in and drop the user off the connect screen on error.
+  // This gate also keeps PersistQueryClientProvider from restoring the cache
+  // until checkAuth has purged any legacy demo data (see stores/auth.ts).
   if (!hasCheckedAuth) {
     return (
       <View style={styles.loadingContainer}>

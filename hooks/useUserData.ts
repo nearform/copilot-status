@@ -1,17 +1,10 @@
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { SAMPLE_QUOTA } from '@/constants/sampleData';
 import { fetchCopilotQuota, fetchGitHubUser, type GitHubUser } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { getStoredToken } from '@/stores/secureStorage';
 import type { AllQuotas } from '@/types/quota';
 import { useQuery } from '@tanstack/react-query';
-
-export const QUERY_KEYS = {
-  USER: ['user'],
-  QUOTA: ['quota'],
-  // Kept apart from QUOTA so sample data never reaches the home screen widget,
-  // which reads QUOTA by exact key.
-  SAMPLE_QUOTA: ['quota', 'sample'],
-} as const;
 
 async function requireToken(): Promise<string> {
   const token = await getStoredToken();

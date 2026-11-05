@@ -1,4 +1,4 @@
-import { QUERY_KEYS } from '@/hooks/useUserData';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { GitHubUser } from '@/services/api';
 import i18n from '@/services/i18n';
 import { queryClient } from '@/services/queryClient';
