@@ -2,7 +2,7 @@ import { useGitHubAuthRequest } from '@/services/auth';
 import { useAuthStore } from '@/stores/auth';
 import { goBackOrHome } from '@/utils/navigation';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Animated, Text, TouchableOpacity, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -14,8 +14,8 @@ export default function LoginScreen() {
   const { signIn, isLoading, error, clearError } = useAuthStore();
   const [localLoading, setLocalLoading] = useState(false);
 
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-  const slideAnim = React.useRef(new Animated.Value(30)).current;
+  const [fadeAnim] = useState(() => new Animated.Value(0));
+  const [slideAnim] = useState(() => new Animated.Value(30));
 
   useEffect(() => {
     Animated.parallel([
@@ -30,7 +30,7 @@ export default function LoginScreen() {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
   const handlePress = async () => {
     clearError();
