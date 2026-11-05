@@ -69,74 +69,74 @@ describe('CircularProgress', () => {
     lastUpdated: new Date(),
   });
 
-  it('renders correctly with initial state showing used quota', () => {
+  it('renders correctly with initial state showing used quota', async () => {
     const quota = createQuotaInfo(50, 100);
-    render(<CircularProgress quota={quota} size={200} />);
+    await render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('50%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
   });
 
-  it('toggles to show available quota when pressed', () => {
+  it('toggles to show available quota when pressed', async () => {
     const quota = createQuotaInfo(50, 100);
-    render(<CircularProgress quota={quota} size={200} />);
+    await render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('50%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
 
     const pressable = screen.getByRole('button');
-    fireEvent.press(pressable);
+    await fireEvent.press(pressable);
 
     expect(screen.getByText('50%')).toBeTruthy();
     expect(screen.getByText('AVAILABLE')).toBeTruthy();
   });
 
-  it('toggles back to used quota when pressed again', () => {
+  it('toggles back to used quota when pressed again', async () => {
     const quota = createQuotaInfo(50, 100);
-    render(<CircularProgress quota={quota} size={200} />);
+    await render(<CircularProgress quota={quota} size={200} />);
 
     const pressable = screen.getByRole('button');
 
-    fireEvent.press(pressable);
+    await fireEvent.press(pressable);
     expect(screen.getByText('AVAILABLE')).toBeTruthy();
 
-    fireEvent.press(pressable);
+    await fireEvent.press(pressable);
     expect(screen.getByText('USED')).toBeTruthy();
   });
 
-  it('calculates percentages correctly for different quota values', () => {
+  it('calculates percentages correctly for different quota values', async () => {
     const quota1 = createQuotaInfo(75, 100);
-    const { rerender } = render(<CircularProgress quota={quota1} size={200} />);
+    const { rerender } = await render(<CircularProgress quota={quota1} size={200} />);
 
     expect(screen.getByText('75%')).toBeTruthy();
 
     const pressable = screen.getByRole('button');
-    fireEvent.press(pressable);
+    await fireEvent.press(pressable);
 
     expect(screen.getByText('25%')).toBeTruthy();
 
     const quota2 = createQuotaInfo(90, 100);
-    rerender(<CircularProgress quota={quota2} size={200} />);
+    await rerender(<CircularProgress quota={quota2} size={200} />);
 
     expect(screen.getByText('10%')).toBeTruthy();
   });
 
-  it('handles edge case with 0 total quota', () => {
+  it('handles edge case with 0 total quota', async () => {
     const quota = createQuotaInfo(0, 0);
-    render(<CircularProgress quota={quota} size={200} />);
+    await render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('0%')).toBeTruthy();
     expect(screen.getByText('USED')).toBeTruthy();
   });
 
-  it('handles edge case with full quota usage', () => {
+  it('handles edge case with full quota usage', async () => {
     const quota = createQuotaInfo(100, 100);
-    render(<CircularProgress quota={quota} size={200} />);
+    await render(<CircularProgress quota={quota} size={200} />);
 
     expect(screen.getByText('100%')).toBeTruthy();
 
     const pressable = screen.getByRole('button');
-    fireEvent.press(pressable);
+    await fireEvent.press(pressable);
 
     expect(screen.getByText('0%')).toBeTruthy();
     expect(screen.getByText('AVAILABLE')).toBeTruthy();
