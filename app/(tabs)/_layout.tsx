@@ -23,21 +23,25 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t('quota.types.premium_interactions'),
-          tabBarIcon: ({ color }) => <Ionicons size={24} name="sparkles" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={24} name="sparkles" color={color as string} />,
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: t('quota.types.chat'),
-          tabBarIcon: ({ color }) => <Ionicons size={24} name="chatbubbles" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="chatbubbles" color={color as string} />
+          ),
         }}
       />
       <Tabs.Screen
         name="completions"
         options={{
           title: t('quota.types.completions'),
-          tabBarIcon: ({ color }) => <Ionicons size={24} name="code-slash" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="code-slash" color={color as string} />
+          ),
         }}
       />
     </Tabs>
