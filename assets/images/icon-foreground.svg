@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- The icon mark on a transparent background, for light surfaces. -->
+  <!-- Source for adaptive-icon.png (Android) and splash-icon.png. -->
+  <!-- The mark stays within a 338 px radius, inside Android's adaptive-icon safe zone. -->
+  <circle cx="512" cy="512" r="280" fill="none" stroke="#C9DEE6" stroke-width="72"/>
+  <path d="M 512 232 A 280 280 0 1 1 237.0 564.5" fill="none" stroke="#0A7EA4" stroke-width="72" stroke-linecap="round"/>
+  <g fill="none" stroke="#0F2530" stroke-width="36" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 452 382 C 410 382 404 398 404 440 L 404 482 C 404 502 396 512 372 512 C 396 512 404 522 404 542 L 404 584 C 404 626 410 642 452 642"/>
+    <path d="M 572 382 C 614 382 620 398 620 440 L 620 482 C 620 502 628 512 652 512 C 628 512 620 522 620 542 L 620 584 C 620 626 614 642 572 642"/>
+  </g>
+  <circle cx="512" cy="512" r="24" fill="#0A7EA4"/>
+</svg>
