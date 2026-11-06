@@ -7,6 +7,7 @@ import { useUser } from '@/hooks/useUserData';
 import { useAuthStore } from '@/stores/auth';
 import { useQuotaStore } from '@/stores/quota';
 import { useThemeStore } from '@/stores/theme';
+import { goBackOrHome } from '@/utils/navigation';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
@@ -18,7 +19,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 export default function SettingsScreen() {
   const { theme } = useUnistyles();
   const { t } = useTranslation();
-  const { signOut } = useAuthStore();
+  const { signOut, isAuthenticated } = useAuthStore();
   const { clearQuota } = useQuotaStore();
   const { themePreference, setThemePreference } = useThemeStore();
   const { data: user } = useUser();
@@ -33,7 +34,7 @@ export default function SettingsScreen() {
         onPress: async () => {
           await signOut();
           clearQuota();
-          router.replace('/(auth)/login');
+          goBackOrHome();
         },
       },
     ]);
@@ -62,12 +63,21 @@ export default function SettingsScreen() {
               <Ionicons name="person" size={32} color={theme.colors.icon} />
             </View>
           )}
-          <View style={styles.userInfo}>
-            <Text style={styles.username}>{user?.name ?? user?.login ?? t('common.unknown')}</Text>
-            <Text style={styles.userSubtitle}>
-              {t('settings.signedInAs', { username: user?.login ?? t('common.unknown') })}
-            </Text>
-          </View>
+          {isAuthenticated ? (
+            <View style={styles.userInfo}>
+              <Text style={styles.username}>
+                {user?.name ?? user?.login ?? t('common.unknown')}
+              </Text>
+              <Text style={styles.userSubtitle}>
+                {t('settings.signedInAs', { username: user?.login ?? t('common.unknown') })}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.userInfo}>
+              <Text style={styles.username}>{t('settings.notConnected')}</Text>
+              <Text style={styles.userSubtitle}>{t('settings.notConnectedSubtitle')}</Text>
+            </View>
+          )}
         </View>
       </SettingsSection>
 
@@ -98,11 +108,19 @@ export default function SettingsScreen() {
       </SettingsCategory>
 
       <SettingsCategory title="settings.actions">
-        <TouchableOpacity style={styles.row} onPress={handleSignOut}>
-          <Ionicons name="log-out-outline" size={22} color={theme.colors.critical} />
-          <Text style={[styles.rowText, styles.destructiveText]}>{t('settings.signOut')}</Text>
-          <Ionicons name="chevron-forward" size={20} color={theme.colors.icon} />
-        </TouchableOpacity>
+        {isAuthenticated ? (
+          <TouchableOpacity style={styles.row} onPress={handleSignOut}>
+            <Ionicons name="log-out-outline" size={22} color={theme.colors.critical} />
+            <Text style={[styles.rowText, styles.destructiveText]}>{t('settings.signOut')}</Text>
+            <Ionicons name="chevron-forward" size={20} color={theme.colors.icon} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.row} onPress={() => router.push('/(auth)/login')}>
+            <Ionicons name="logo-github" size={22} color={theme.colors.tint} />
+            <Text style={[styles.rowText, styles.connectText]}>{t('settings.connectGitHub')}</Text>
+            <Ionicons name="chevron-forward" size={20} color={theme.colors.icon} />
+          </TouchableOpacity>
+        )}
       </SettingsCategory>
 
       <SettingsCategory title="settings.about">
@@ -206,5 +224,8 @@ const styles = StyleSheet.create(theme => ({
   },
   destructiveText: {
     color: theme.colors.critical,
+  },
+  connectText: {
+    color: theme.colors.tint,
   },
 }));

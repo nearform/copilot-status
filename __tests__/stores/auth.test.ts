@@ -1,9 +1,16 @@
+import { LEGACY_DEMO_TOKEN } from '@/constants/sampleData';
 import { useAuthStore } from '@/stores/auth';
 import { exchangeCodeForToken } from '@/services/auth';
+import { queryClient, queryPersister } from '@/services/queryClient';
 import { clearAuthData, getStoredToken, storeToken } from '@/stores/secureStorage';
+import { clearAppWidget } from '@/widgets/voltraWidgetService';
 
 jest.mock('@/services/auth');
 jest.mock('@/stores/secureStorage');
+jest.mock('@/services/queryClient', () => ({
+  queryClient: { clear: jest.fn() },
+  queryPersister: { removeClient: jest.fn() },
+}));
 
 describe('stores/auth', () => {
   beforeEach(() => {
@@ -48,6 +55,35 @@ describe('stores/auth', () => {
       expect(state.isLoading).toBe(false);
     });
 
+    it('should mark auth as checked once complete', async () => {
+      (getStoredToken as jest.Mock).mockResolvedValue(null);
+      useAuthStore.setState({ hasCheckedAuth: false });
+
+      await useAuthStore.getState().checkAuth();
+
+      expect(useAuthStore.getState().hasCheckedAuth).toBe(true);
+    });
+
+    it('should clear a legacy demo token and treat the user as signed out', async () => {
+      (getStoredToken as jest.Mock).mockResolvedValue(LEGACY_DEMO_TOKEN);
+      (clearAuthData as jest.Mock).mockResolvedValue(undefined);
+
+      await useAuthStore.getState().checkAuth();
+
+      expect(clearAuthData).toHaveBeenCalled();
+      expect(queryClient.clear).toHaveBeenCalled();
+      expect(queryPersister.removeClient).toHaveBeenCalled();
+      expect(clearAppWidget).toHaveBeenCalled();
+      // Token is removed last so an interrupted purge is retried next launch.
+      const tokenClearedAt = (clearAuthData as jest.Mock).mock.invocationCallOrder[0];
+      expect((queryClient.clear as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
+      expect((queryPersister.removeClient as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
+      expect((clearAppWidget as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
+      const state = useAuthStore.getState();
+      expect(state.isAuthenticated).toBe(false);
+      expect(state.hasCheckedAuth).toBe(true);
+    });
+
     it('should handle errors during checkAuth', async () => {
       (getStoredToken as jest.Mock).mockRejectedValue(new Error('Storage error'));
 
@@ -58,6 +94,7 @@ describe('stores/auth', () => {
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBe('Storage error');
+      expect(state.hasCheckedAuth).toBe(true);
     });
 
     it('should set isLoading to true during operation', async () => {
