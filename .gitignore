@@ -49,3 +49,7 @@ app-example
 
 # test coverage
 coverage/
+
+# Signing credentials
+credentials.json
+ios-certs/

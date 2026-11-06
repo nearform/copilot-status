@@ -1,6 +1,6 @@
-# Copilot Status
+# CodeMeter
 
-A mobile app to monitor your GitHub Copilot usage quota with native home screen widgets for iOS and Android.
+A mobile app to monitor your AI coding assistant usage quota with native home screen widgets for iOS and Android.
 
 ## Features
 

@@ -1,5 +1,5 @@
 import { DEMO_QUOTA, DEMO_TOKEN, DEMO_USER } from '@/constants/demo';
-import { fetchCopilotQuota, fetchGitHubUser, type GitHubUser } from '@/services/api';
+import { fetchQuota, fetchGitHubUser, type GitHubUser } from '@/services/api';
 import { getStoredToken } from '@/stores/secureStorage';
 import type { AllQuotas } from '@/types/quota';
 import { useQuery } from '@tanstack/react-query';
@@ -28,7 +28,7 @@ export function useQuota() {
       const token = await getStoredToken();
       if (!token) throw new Error('Not authenticated');
       if (token === DEMO_TOKEN) return DEMO_QUOTA;
-      return fetchCopilotQuota(token);
+      return fetchQuota(token);
     },
   });
 

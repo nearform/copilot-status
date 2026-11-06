@@ -1,5 +1,5 @@
 import { storage, StorageKeys, type ThemePreference } from '@/services/storage';
-import { updateCopilotWidget } from '@/widgets/voltraWidgetService';
+import { updateAppWidget } from '@/widgets/voltraWidgetService';
 import { Appearance } from 'react-native';
 import { UnistylesRuntime } from 'react-native-unistyles';
 import { create } from 'zustand';
@@ -29,7 +29,7 @@ const applyTheme = (theme: ThemePreference) => {
     UnistylesRuntime.setTheme(theme);
   }
 
-  updateCopilotWidget();
+  updateAppWidget();
 };
 
 export const useThemeStore = create<ThemeState>()(
