@@ -19,7 +19,6 @@
         "backgroundColor": "#ffffff",
         "foregroundImage": "./assets/images/icon.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.nearform.copilotstatus"
     },
