@@ -51,6 +51,7 @@
       [
         "voltra",
         {
+          "targetName": "CopilotStatusLiveActivity",
           "groupIdentifier": "group.com.nearform.copilotstatus",
           "widgets": [
             {
