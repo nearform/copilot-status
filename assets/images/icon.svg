@@ -1,133 +1,14 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Definitions for Gradients and Shadows -->
-  <defs>
-    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22C55E"/>
-      <stop offset="50%" stop-color="#F97316"/>
-      <stop offset="100%" stop-color="#EF4444"/>
-    </linearGradient>
-
-    <filter id="outerGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-
-    <filter id="mascotShadow" x="-10%" y="-10%" width="120%" height="140%">
-      <feDropShadow dx="0" dy="25" stdDeviation="15" flood-color="black" flood-opacity="0.6"/>
-    </filter>
-  </defs>
-
-  <!-- Circular Border with Gradient -->
-  <circle cx="512" cy="512" r="410" stroke="url(#ringGradient)" stroke-width="48" fill="none" filter="url(#outerGlow)"/>
-
-  <!-- Mascot (GitHub Copilot Robot inspired) -->
-  <g filter="url(#mascotShadow)">
-    <!-- Main Head Shape (Rounded Helmet) -->
-    <defs>
-      <linearGradient id="headGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#2DD4BF"/>
-        <stop offset="50%" stop-color="#0EA5E9"/>
-        <stop offset="100%" stop-color="#2563EB"/>
-      </linearGradient>
-      <linearGradient id="faceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="#F8FAFC"/>
-        <stop offset="100%" stop-color="#E2E8F0"/>
-      </linearGradient>
-      <linearGradient id="goggleGlass" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#38BDF8"/>
-        <stop offset="100%" stop-color="#2563EB"/>
-      </linearGradient>
-    </defs>
-
-    <!-- Side Ears/Headphones -->
-    <rect x="180" y="440" width="100" height="180" rx="40" fill="url(#headGradient)"/>
-    <rect x="744" y="440" width="100" height="180" rx="40" fill="url(#headGradient)"/>
-    <circle cx="230" cy="530" r="15" fill="#BAE6FD" opacity="0.8"/>
-    <circle cx="794" cy="530" r="15" fill="#BAE6FD" opacity="0.8"/>
-    <path d="M230 530 L230 480" stroke="#BAE6FD" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
-    <path d="M794 530 L794 480" stroke="#BAE6FD" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
-
-    <!-- Main Helmet Body -->
-    <path d="M260 500
-             C260 350 360 200 512 200
-             C664 200 764 350 764 500
-             L764 700
-             C764 780 700 840 512 840
-             C324 840 260 780 260 700
-             Z"
-          fill="url(#headGradient)"/>
-
-    <!-- Face Plate -->
-    <path d="M310 520
-             C310 520 310 700 310 700
-             C310 760 360 810 512 810
-             C664 810 714 760 714 700
-             L714 520
-             C714 520 620 540 512 540
-             C404 540 310 520 310 520 Z"
-          fill="url(#faceGradient)"/>
-
-    <!-- Eyes -->
-    <rect x="400" y="600" width="60" height="100" rx="30" fill="#0F172A"/>
-    <rect x="564" y="600" width="60" height="100" rx="30" fill="#0F172A"/>
-
-    <!-- Eye Reflections -->
-    <path d="M410 615 C410 615 440 615 450 640" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.8"/>
-    <path d="M574 615 C574 615 604 615 614 640" stroke="white" stroke-width="8" stroke-linecap="round" stroke-opacity="0.8"/>
-
-    <!-- Goggles Frame -->
-    <path d="M310 350
-             C310 290 350 250 420 250
-             C490 250 512 300 512 300
-             C512 300 534 250 604 250
-             C674 250 714 290 714 350
-             L714 430
-             C714 490 674 530 604 530
-             C534 530 512 480 512 480
-             C512 480 490 530 420 530
-             C350 530 310 490 310 430
-             Z"
-          fill="#334155"/>
-
-    <path d="M320 360
-             C320 300 360 260 420 260
-             C480 260 502 310 502 310
-             L502 430
-             C502 430 480 520 420 520
-             C360 520 320 480 320 430
-             Z"
-          fill="white" stroke="#94A3B8" stroke-width="12"/>
-
-    <path d="M704 360
-             C704 300 664 260 604 260
-             C544 260 522 310 522 310
-             L522 430
-             C522 430 544 520 604 520
-             C664 520 704 480 704 430
-             Z"
-          fill="white" stroke="#94A3B8" stroke-width="12"/>
-
-    <!-- Goggles Lens -->
-    <path d="M335 360
-             C335 310 365 275 420 275
-             C475 275 487 310 487 310
-             L487 430
-             C487 430 475 505 420 505
-             C365 505 335 470 335 430
-             Z"
-          fill="url(#goggleGlass)"/>
-
-    <path d="M689 360
-             C689 310 659 275 604 275
-             C549 275 537 310 537 310
-             L537 430
-             C537 430 549 505 604 505
-             C659 505 689 470 689 430
-             Z"
-          fill="url(#goggleGlass)"/>
-
-    <!-- Goggles Reflections -->
-    <path d="M350 320 L450 290" stroke="white" stroke-width="20" stroke-opacity="0.2" stroke-linecap="round"/>
-    <path d="M554 320 L654 290" stroke="white" stroke-width="20" stroke-opacity="0.2" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- CodeMeter app icon: a usage ring around code braces. -->
+  <!-- Source for icon.png. icon-foreground*.svg hold the same mark without the background. -->
+  <rect width="1024" height="1024" fill="#EAF4F8"/>
+  <!-- Ring track and progress (72% of the ring, clockwise from the top). -->
+  <circle cx="512" cy="512" r="280" fill="none" stroke="#C9DEE6" stroke-width="72"/>
+  <path d="M 512 232 A 280 280 0 1 1 237.0 564.5" fill="none" stroke="#0A7EA4" stroke-width="72" stroke-linecap="round"/>
+  <!-- Code braces. -->
+  <g fill="none" stroke="#0F2530" stroke-width="36" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 452 382 C 410 382 404 398 404 440 L 404 482 C 404 502 396 512 372 512 C 396 512 404 522 404 542 L 404 584 C 404 626 410 642 452 642"/>
+    <path d="M 572 382 C 614 382 620 398 620 440 L 620 482 C 620 502 628 512 652 512 C 628 512 620 522 620 542 L 620 584 C 620 626 614 642 572 642"/>
   </g>
+  <circle cx="512" cy="512" r="24" fill="#0A7EA4"/>
 </svg>
