@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CodeMeter store artwork</title>
+<!--
+  Source for the store artwork. Run ./store-assets/render.sh to regenerate:
+    ?layout=play    Google Play feature graphic, 1024x500
+    ?layout=header  App Store product page header, 1920x823 CSS px rendered at 2x (3840x1646)
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F2530;
+    --ring-faint: #16323F;
+    --ring-softer: #1A3946;
+    --track: #2A4552;
+    --teal: #0A7EA4;
+    --text: #FFFFFF;
+    --muted: #A7C4CF;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    font-family: Inter, sans-serif;
+    color: var(--text);
+    overflow: hidden;
+    position: relative;
+  }
+  .decor { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .content {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mark { flex: none; }
+  .copy { display: flex; flex-direction: column; }
+  .wordmark { margin: 0; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+  .tagline { margin: 0; font-weight: 500; color: var(--muted); }
+  .features { display: flex; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center;
+    border: 2px solid var(--track); border-radius: 999px;
+    color: var(--muted); font-weight: 500;
+  }
+  .chip i { display: inline-block; border-radius: 50%; background: var(--teal); }
+
+  /* Google Play: 1024x500 */
+  .play .content { gap: 52px; }
+  .play .mark { width: 232px; height: 232px; }
+  .play .copy { gap: 18px; }
+  .play .wordmark { font-size: 88px; }
+  .play .tagline { font-size: 30px; }
+  .play .features { gap: 12px; margin-top: 10px; }
+  .play .chip { font-size: 18px; padding: 8px 16px; gap: 10px; }
+  .play .chip i { width: 10px; height: 10px; }
+
+  /* App Store product page header: 1920x823 CSS px, rendered at 2x */
+  .header .content { gap: 96px; }
+  .header .mark { width: 420px; height: 420px; }
+  .header .copy { gap: 28px; }
+  .header .wordmark { font-size: 156px; }
+  .header .tagline { font-size: 52px; }
+  .header .features { gap: 20px; margin-top: 16px; }
+  .header .chip { font-size: 30px; padding: 14px 28px; gap: 16px; }
+  .header .chip i { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+  <!-- Decorative rings, echoing the icon. Kept low-contrast and away from the centre. -->
+  <svg class="decor" viewBox="0 0 1024 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke-linecap="round">
+      <circle cx="1100" cy="640" r="260" stroke="var(--ring-faint)" stroke-width="44"></circle>
+      <path d="M 840 640 A 260 260 0 0 1 1100 380" stroke="var(--ring-softer)" stroke-width="44"></path>
+      <circle cx="1100" cy="640" r="160" stroke="var(--ring-faint)" stroke-width="28"></circle>
+      <circle cx="-40" cy="-60" r="190" stroke="var(--ring-faint)" stroke-width="36"></circle>
+      <path d="M -40 130 A 190 190 0 0 0 150 -60" stroke="var(--ring-softer)" stroke-width="36"></path>
+    </g>
+  </svg>
+
+  <div class="content">
+    <!-- The app icon's mark (dark variant). -->
+    <svg class="mark" viewBox="196 196 632 632" role="img" aria-label="CodeMeter logo">
+      <circle cx="512" cy="512" r="280" fill="none" stroke="var(--track)" stroke-width="72"></circle>
+      <path d="M 512 232 A 280 280 0 1 1 237.0 564.5" fill="none" stroke="var(--teal)" stroke-width="72" stroke-linecap="round"></path>
+      <g fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M 452 382 C 410 382 404 398 404 440 L 404 482 C 404 502 396 512 372 512 C 396 512 404 522 404 542 L 404 584 C 404 626 410 642 452 642"></path>
+        <path d="M 572 382 C 614 382 620 398 620 440 L 620 482 C 620 502 628 512 652 512 C 628 512 620 522 620 542 L 620 584 C 620 626 614 642 572 642"></path>
+      </g>
+      <circle cx="512" cy="512" r="24" fill="var(--teal)"></circle>
+    </svg>
+
+    <div class="copy">
+      <h1 class="wordmark">CodeMeter</h1>
+      <p class="tagline">Your AI coding usage, at a glance.</p>
+      <div class="features">
+        <span class="chip"><i></i>Quota and reset date</span>
+        <span class="chip"><i></i>Daily budget</span>
+        <span class="chip"><i></i>Home screen widget</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const layout = new URLSearchParams(location.search).get('layout') === 'header' ? 'header' : 'play';
+    document.body.classList.add(layout);
+  </script>
+</body>
+</html>
