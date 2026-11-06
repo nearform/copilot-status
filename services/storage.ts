@@ -5,7 +5,7 @@ export const StorageKeys = {
 } as const;
 
 export const storage: MMKV = createMMKV({
-  id: 'copilot-status-storage',
+  id: 'codemeter-storage',
 });
 
 export type ThemePreference = 'light' | 'dark' | 'system';

@@ -15,7 +15,7 @@ jest.mock('@/stores/secureStorage', () => ({
 
 jest.mock('@/services/api', () => ({
   fetchGitHubUser: jest.fn(),
-  fetchCopilotQuota: jest.fn(),
+  fetchQuota: jest.fn(),
 }));
 
 const mockedUseQuery = useQuery as jest.Mock;
