@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth';
 import { exchangeCodeForToken } from '@/services/auth';
 import { queryClient, queryPersister } from '@/services/queryClient';
 import { clearAuthData, getStoredToken, storeToken } from '@/stores/secureStorage';
-import { clearCopilotWidget } from '@/widgets/voltraWidgetService';
+import { clearAppWidget } from '@/widgets/voltraWidgetService';
 
 jest.mock('@/services/auth');
 jest.mock('@/stores/secureStorage');
@@ -73,12 +73,12 @@ describe('stores/auth', () => {
       expect(clearAuthData).toHaveBeenCalled();
       expect(queryClient.clear).toHaveBeenCalled();
       expect(queryPersister.removeClient).toHaveBeenCalled();
-      expect(clearCopilotWidget).toHaveBeenCalled();
+      expect(clearAppWidget).toHaveBeenCalled();
       // Token is removed last so an interrupted purge is retried next launch.
       const tokenClearedAt = (clearAuthData as jest.Mock).mock.invocationCallOrder[0];
       expect((queryClient.clear as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
       expect((queryPersister.removeClient as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
-      expect((clearCopilotWidget as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
+      expect((clearAppWidget as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(tokenClearedAt);
       const state = useAuthStore.getState();
       expect(state.isAuthenticated).toBe(false);
       expect(state.hasCheckedAuth).toBe(true);

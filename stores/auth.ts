@@ -2,7 +2,7 @@ import { LEGACY_DEMO_TOKEN } from '@/constants/sampleData';
 import { queryClient, queryPersister } from '@/services/queryClient';
 import { exchangeCodeForToken } from '@/services/auth';
 import { clearAuthData, getStoredToken, storeToken } from '@/stores/secureStorage';
-import { clearCopilotWidget } from '@/widgets/voltraWidgetService';
+import { clearAppWidget } from '@/widgets/voltraWidgetService';
 import { create } from 'zustand';
 
 interface AuthState {
@@ -35,7 +35,7 @@ export const useAuthStore = create<AuthState>(set => {
           // still finds the token and retries on next launch.
           queryClient.clear();
           await queryPersister.removeClient();
-          await clearCopilotWidget();
+          await clearAppWidget();
           await clearAuthData();
           token = null;
         }

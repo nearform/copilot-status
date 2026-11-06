@@ -47,6 +47,6 @@ jest.mock('@octokit/rest', () => ({
 }));
 
 jest.mock('@/widgets/voltraWidgetService', () => ({
-  updateCopilotWidget: jest.fn(() => Promise.resolve()),
-  clearCopilotWidget: jest.fn(() => Promise.resolve()),
+  updateAppWidget: jest.fn(() => Promise.resolve()),
+  clearAppWidget: jest.fn(() => Promise.resolve()),
 }));

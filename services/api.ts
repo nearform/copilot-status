@@ -1,4 +1,4 @@
-import type { GitHubCopilotResponse } from '@/types/api';
+import type { GitHubQuotaResponse } from '@/types/api';
 import type { AllQuotas, QuotaInfo, QuotaType } from '@/types/quota';
 import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
 
@@ -15,7 +15,7 @@ export async function fetchGitHubUser(token: string): Promise<GitHubUser> {
 
 function parseQuotaSnapshot(
   quotaType: QuotaType,
-  snapshot: NonNullable<GitHubCopilotResponse['quota_snapshots']>[QuotaType],
+  snapshot: NonNullable<GitHubQuotaResponse['quota_snapshots']>[QuotaType],
   resetDate: Date
 ): QuotaInfo {
   return {
@@ -52,7 +52,7 @@ function parseFreeQuotaSnapshot(
   };
 }
 
-function parseQuotaResponse(response: GitHubCopilotResponse): AllQuotas {
+function parseQuotaResponse(response: GitHubQuotaResponse): AllQuotas {
   const hasSubscription = response.access_type_sku !== 'no_access';
 
   if (!hasSubscription) {
@@ -96,13 +96,13 @@ function parseQuotaResponse(response: GitHubCopilotResponse): AllQuotas {
   return { hasSubscription: false };
 }
 
-export async function fetchCopilotQuota(token: string): Promise<AllQuotas> {
+export async function fetchQuota(token: string): Promise<AllQuotas> {
   const octokit = new Octokit({
     auth: token,
   });
 
   const { data } = (await octokit.request('GET /copilot_internal/user')) as {
-    data: GitHubCopilotResponse;
+    data: GitHubQuotaResponse;
   };
 
   return parseQuotaResponse(data);

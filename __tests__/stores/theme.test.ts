@@ -1,5 +1,5 @@
 import { useThemeStore } from '@/stores/theme';
-import { updateCopilotWidget } from '@/widgets/voltraWidgetService';
+import { updateAppWidget } from '@/widgets/voltraWidgetService';
 import { UnistylesRuntime } from 'react-native-unistyles';
 
 jest.mock('@/services/storage', () => ({
@@ -34,7 +34,7 @@ describe('stores/theme', () => {
       expect(useThemeStore.getState().themePreference).toBe('light');
       expect(UnistylesRuntime.setAdaptiveThemes).toHaveBeenCalledWith(false);
       expect(UnistylesRuntime.setTheme).toHaveBeenCalledWith('light');
-      expect(updateCopilotWidget).toHaveBeenCalled();
+      expect(updateAppWidget).toHaveBeenCalled();
     });
 
     it('should set dark theme and update storage', () => {
@@ -44,7 +44,7 @@ describe('stores/theme', () => {
       expect(useThemeStore.getState().themePreference).toBe('dark');
       expect(UnistylesRuntime.setAdaptiveThemes).toHaveBeenCalledWith(false);
       expect(UnistylesRuntime.setTheme).toHaveBeenCalledWith('dark');
-      expect(updateCopilotWidget).toHaveBeenCalled();
+      expect(updateAppWidget).toHaveBeenCalled();
     });
 
     it('should set system theme with adaptive mode', () => {
@@ -54,7 +54,7 @@ describe('stores/theme', () => {
       expect(useThemeStore.getState().themePreference).toBe('system');
       expect(UnistylesRuntime.setAdaptiveThemes).toHaveBeenCalledWith(true);
       expect(UnistylesRuntime.setTheme).not.toHaveBeenCalled();
-      expect(updateCopilotWidget).toHaveBeenCalled();
+      expect(updateAppWidget).toHaveBeenCalled();
     });
   });
 });

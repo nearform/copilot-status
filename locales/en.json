@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Copilot Status",
-    "copilot": "Copilot",
+    "appName": "CodeMeter",
+    "appTitle": "CodeMeter",
     "loading": "Loading...",
     "unknown": "Unknown"
   },
@@ -10,10 +10,10 @@
     "settings": "Settings"
   },
   "dashboard": {
-    "title": "Copilot Status",
+    "title": "CodeMeter",
     "loadingQuota": "Loading quota...",
     "unableToLoad": "Unable to load quota",
-    "noSubscription": "User does not have a Copilot subscription",
+    "noSubscription": "User does not have an active subscription",
     "quotaNotAvailable": "{{type}} are not included in your current plan"
   },
   "quota": {
@@ -40,22 +40,19 @@
   },
   "sample": {
     "title": "Showing sample data",
-    "message": "Connect your GitHub account to see your own Copilot usage.",
+    "message": "Connect your GitHub account to see your own AI coding usage.",
     "connect": "Connect GitHub"
   },
   "login": {
-    "title": "Copilot Status",
-    "subtitle": "Monitor your GitHub Copilot usage and quota in real-time",
+    "title": "CodeMeter",
+    "subtitle": "Monitor your AI coding usage and quota in real-time",
     "signInButton": "Sign in with GitHub",
-    "notNow": "Not now",
-    "footer": "Securely authenticate with your GitHub account to access your Copilot quota information."
+    "footer": "Securely authenticate with your GitHub account to access your usage quota information.",
+    "notNow": "Not now"
   },
   "settings": {
     "title": "Settings",
     "signedInAs": "Signed in as @{{username}}",
-    "notConnected": "Not connected",
-    "notConnectedSubtitle": "Connect GitHub to see your Copilot usage",
-    "connectGitHub": "Connect GitHub",
     "appearance": "APPEARANCE",
     "light": "Light",
     "dark": "Dark",
@@ -75,10 +72,13 @@
     "author": "Author",
     "authorName": "@nearform",
     "authorProfile": "https://github.com/nearform",
-    "disclaimer": "This app is not affiliated with or endorsed by GitHub."
+    "disclaimer": "This app is not affiliated with or endorsed by GitHub.",
+    "notConnected": "Not connected",
+    "notConnectedSubtitle": "Connect GitHub to see your AI coding usage",
+    "connectGitHub": "Connect GitHub"
   },
   "widget": {
-    "copilot": "Copilot",
+    "appTitle": "CodeMeter",
     "used": "Used",
     "left": "Left",
     "requestsUsed": "Requests used",

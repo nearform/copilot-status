@@ -1,7 +1,7 @@
 import { SAMPLE_QUOTA } from '@/constants/sampleData';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useQuota, useUser } from '@/hooks/useUserData';
-import { fetchCopilotQuota, fetchGitHubUser } from '@/services/api';
+import { fetchQuota, fetchGitHubUser } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { getStoredToken } from '@/stores/secureStorage';
 import { useQuery } from '@tanstack/react-query';
@@ -20,7 +20,7 @@ jest.mock('@/stores/secureStorage', () => ({
 
 jest.mock('@/services/api', () => ({
   fetchGitHubUser: jest.fn(),
-  fetchCopilotQuota: jest.fn(),
+  fetchQuota: jest.fn(),
 }));
 
 const mockedUseQuery = useQuery as jest.Mock;
@@ -86,11 +86,11 @@ describe('hooks/useUserData', () => {
 
       it('fetches the quota with the stored token', async () => {
         (getStoredToken as jest.Mock).mockResolvedValue('real-token');
-        (fetchCopilotQuota as jest.Mock).mockResolvedValue({ hasSubscription: false });
+        (fetchQuota as jest.Mock).mockResolvedValue({ hasSubscription: false });
         useQuota();
 
         await expect(lastQueryOptions().queryFn()).resolves.toEqual({ hasSubscription: false });
-        expect(fetchCopilotQuota).toHaveBeenCalledWith('real-token');
+        expect(fetchQuota).toHaveBeenCalledWith('real-token');
       });
 
       it('throws if the token is missing', async () => {
@@ -98,7 +98,7 @@ describe('hooks/useUserData', () => {
         useQuota();
 
         await expect(lastQueryOptions().queryFn()).rejects.toThrow('Not authenticated');
-        expect(fetchCopilotQuota).not.toHaveBeenCalled();
+        expect(fetchQuota).not.toHaveBeenCalled();
       });
     });
 
@@ -117,7 +117,7 @@ describe('hooks/useUserData', () => {
 
         await expect(lastQueryOptions().queryFn()).resolves.toBe(SAMPLE_QUOTA);
         expect(getStoredToken).not.toHaveBeenCalled();
-        expect(fetchCopilotQuota).not.toHaveBeenCalled();
+        expect(fetchQuota).not.toHaveBeenCalled();
       });
     });
 

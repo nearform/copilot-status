@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { SAMPLE_QUOTA } from '@/constants/sampleData';
-import { fetchCopilotQuota, fetchGitHubUser, type GitHubUser } from '@/services/api';
+import { fetchQuota, fetchGitHubUser, type GitHubUser } from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { getStoredToken } from '@/stores/secureStorage';
 import type { AllQuotas } from '@/types/quota';
@@ -32,7 +32,7 @@ export function useQuota() {
   const query = useQuery<AllQuotas>({
     queryKey: isAuthenticated ? QUERY_KEYS.QUOTA : QUERY_KEYS.SAMPLE_QUOTA,
     queryFn: isAuthenticated
-      ? async () => fetchCopilotQuota(await requireToken())
+      ? async () => fetchQuota(await requireToken())
       : async () => SAMPLE_QUOTA,
   });
 

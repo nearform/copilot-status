@@ -1,5 +1,5 @@
-import { fetchCopilotQuota, fetchGitHubUser } from '@/services/api';
-import type { GitHubCopilotResponse } from '@/types/api';
+import { fetchQuota, fetchGitHubUser } from '@/services/api';
+import type { GitHubQuotaResponse } from '@/types/api';
 import type { AllQuotas, PaidQuotas } from '@/types/quota';
 import { Octokit } from '@octokit/rest';
 
@@ -54,7 +54,7 @@ describe('services/api', () => {
     });
   });
 
-  describe('fetchCopilotQuota', () => {
+  describe('fetchQuota', () => {
     const createMockQuotaSnapshot = <T extends string>(
       quotaId: T,
       entitlement: number,
@@ -73,7 +73,7 @@ describe('services/api', () => {
       unlimited,
     });
 
-    const mockCopilotResponse: GitHubCopilotResponse = {
+    const mockQuotaResponse: GitHubQuotaResponse = {
       access_type_sku: 'plus_yearly_subscriber_quota',
       analytics_tracking_id: 'test-tracking-id',
       assigned_date: '2024-01-01T00:00:00Z',
@@ -98,10 +98,10 @@ describe('services/api', () => {
       },
     };
 
-    it('should fetch and parse copilot quota data', async () => {
+    it('should fetch and parse quota data', async () => {
       const lastUpdated = new Date('2024-01-15T12:00:00');
       jest.useFakeTimers().setSystemTime(lastUpdated);
-      const mockRequest = jest.fn().mockResolvedValue({ data: mockCopilotResponse });
+      const mockRequest = jest.fn().mockResolvedValue({ data: mockQuotaResponse });
 
       const MockedOctokit = jest.mocked(Octokit);
       MockedOctokit.mockImplementation(
@@ -111,7 +111,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
 
       jest.useRealTimers();
 
@@ -159,8 +159,8 @@ describe('services/api', () => {
     });
 
     it('should calculate used quota correctly', async () => {
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         quota_snapshots: {
           premium_interactions: createMockQuotaSnapshot('premium_interactions', 2000, 500, 25),
           chat: createMockQuotaSnapshot('chat', 0, 0, 100, true),
@@ -178,7 +178,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
 
       expect(result.hasSubscription).toBe(true);
 
@@ -191,8 +191,8 @@ describe('services/api', () => {
     });
 
     it('should clamp percent values when usage exceeds quota', async () => {
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         quota_snapshots: {
           premium_interactions: createMockQuotaSnapshot('premium_interactions', 1000, -500, -50),
           chat: createMockQuotaSnapshot('chat', 500, -100, -20),
@@ -210,7 +210,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
       const withQuotas = result as PaidQuotas;
 
       expect(withQuotas.premium_interactions.remainingPercent).toBe(0);
@@ -235,12 +235,12 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      await expect(fetchCopilotQuota('test-token')).rejects.toThrow('API Error');
+      await expect(fetchQuota('test-token')).rejects.toThrow('API Error');
     });
 
     it('should return hasSubscription false for no_access users', async () => {
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         access_type_sku: 'no_access',
       };
 
@@ -254,7 +254,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
       expect(result.hasSubscription).toBe(false);
     });
 
@@ -262,8 +262,8 @@ describe('services/api', () => {
       const lastUpdated = new Date('2024-01-15T12:00:00');
       jest.useFakeTimers().setSystemTime(lastUpdated);
 
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         access_type_sku: 'free_limited_copilot',
         quota_snapshots: undefined,
         quota_reset_date: undefined,
@@ -283,7 +283,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
       jest.useRealTimers();
 
       expect(result.hasSubscription).toBe(true);
@@ -322,8 +322,8 @@ describe('services/api', () => {
       const lastUpdated = new Date('2024-01-15T12:00:00');
       jest.useFakeTimers().setSystemTime(lastUpdated);
 
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         access_type_sku: 'free_limited_copilot',
         quota_snapshots: undefined,
         quota_reset_date: undefined,
@@ -342,7 +342,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
       jest.useRealTimers();
 
       expect(result.hasSubscription).toBe(true);
@@ -361,8 +361,8 @@ describe('services/api', () => {
     });
 
     it('should return hasSubscription false when response has no quota data', async () => {
-      const mockResponse: GitHubCopilotResponse = {
-        ...mockCopilotResponse,
+      const mockResponse: GitHubQuotaResponse = {
+        ...mockQuotaResponse,
         access_type_sku: 'free_limited_copilot',
         quota_snapshots: undefined,
         monthly_quotas: undefined,
@@ -378,7 +378,7 @@ describe('services/api', () => {
           }) as unknown as InstanceType<typeof Octokit>
       );
 
-      const result = await fetchCopilotQuota('test-token');
+      const result = await fetchQuota('test-token');
       expect(result.hasSubscription).toBe(false);
     });
   });
