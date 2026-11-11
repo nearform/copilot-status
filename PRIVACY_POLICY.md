@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated:** 27 April 2026
+**Last updated:** 6 November 2026
 
 NearForm ("we", "us", or "our") built the CodeMeter app (the "App") as an open-source application. This Privacy Policy explains how we collect, use, and protect your information when you use the App.
 
@@ -8,7 +8,7 @@ NearForm ("we", "us", or "our") built the CodeMeter app (the "App") as an open-s
 
 ### Authentication Data
 
-The App uses GitHub OAuth to authenticate you. During sign-in, we receive an OAuth access token and your GitHub username. These are stored locally on your device using secure storage and are never transmitted to any server operated by us.
+The App uses GitHub OAuth to authenticate you. During sign-in, the App receives an OAuth access token. It uses the token to read your public GitHub profile, such as your username, display name and avatar, so it can show which account is connected. The token is stored on your device using secure storage, and your profile is cached on your device alongside your usage data. None of this is transmitted to any server operated by us.
 
 ### Usage Data
 
@@ -16,7 +16,7 @@ The App retrieves your AI coding assistant quota and usage information directly 
 
 ### Data We Do Not Collect
 
-- We do not collect personal information such as your name, email address, phone number, or location.
+- We do not collect personal information such as your name, email address, phone number, or location. Your GitHub profile stays on your device and is never sent to us.
 - We do not use analytics, crash reporting, or tracking SDKs.
 - We do not collect device identifiers or advertising IDs.
 

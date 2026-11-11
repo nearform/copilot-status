@@ -172,6 +172,13 @@ copilot-status/
 - **i18n**: [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/)
 - **Date Utils**: [date-fns](https://date-fns.org/)
 
+## Support and Privacy
+
+The `docs/` folder is published with GitHub Pages and provides the URLs the app stores require:
+
+- **Support:** https://nearform.github.io/copilot-status/support/ (`docs/support/index.html`; the site root redirects here)
+- **Privacy policy:** https://nearform.github.io/copilot-status/privacy/ (`docs/privacy/index.html`, a published copy of [PRIVACY_POLICY.md](PRIVACY_POLICY.md); keep the two in sync)
+
 ## License
 
 MIT
