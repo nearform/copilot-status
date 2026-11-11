@@ -83,6 +83,10 @@ npx expo run:ios
 npx expo run:android
 ```
 
+## Releasing
+
+Store builds run on GitHub Actions, not EAS. Push a `vX.Y.Z` tag that matches the `app.json` version to build both apps and upload them to TestFlight and Google Play internal testing. See [RELEASING.md](./RELEASING.md) for the workflows, required secrets and one-time store setup.
+
 ## Scripts
 
 | Command | Description |

@@ -1,0 +1,56 @@
+# Pushing a version tag (e.g. v1.2.0) builds both apps and uploads them to the stores.
+# The tag must match "version" in app.json. See RELEASING.md.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.version.outputs.build_number }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check tag matches app.json version
+        id: version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          APP_VERSION=$(node -p "require('./app.json').expo.version")
+          if [ "$TAG_VERSION" != "$APP_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match app.json version $APP_VERSION. Bump app.json first, then tag."
+            exit 1
+          fi
+          # One build number for both stores, so a release is easy to trace across them.
+          echo "build_number=$(date -u +%y%j%H%M)" >> "$GITHUB_OUTPUT"
+
+  android:
+    name: Android
+    needs: prepare
+    uses: ./.github/workflows/android.yml
+    with:
+      track: ${{ vars.ANDROID_RELEASE_TRACK || 'internal' }}
+      release_status: ${{ vars.ANDROID_RELEASE_STATUS || 'completed' }}
+      build_number: ${{ needs.prepare.outputs.build_number }}
+    secrets: inherit
+
+  ios:
+    name: iOS
+    needs: prepare
+    uses: ./.github/workflows/ios.yml
+    with:
+      upload: true
+      build_number: ${{ needs.prepare.outputs.build_number }}
+    secrets: inherit

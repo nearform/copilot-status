@@ -1,0 +1,165 @@
+# Builds a signed Android App Bundle (+ APK) and optionally uploads it to Google Play.
+# See RELEASING.md for the required secrets and the one-time store setup.
+name: Android
+
+on:
+  # Every merge to main produces build artifacts; nothing is uploaded.
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Google Play track to upload to ("none" only builds)
+        type: choice
+        options: [none, internal, alpha, beta, production]
+        default: internal
+      release_status:
+        description: Play release status ("draft" is required until the app is first published)
+        type: choice
+        options: [completed, draft]
+        default: completed
+      build_number:
+        description: versionCode override (leave empty to generate one)
+        type: string
+        required: false
+  workflow_call:
+    inputs:
+      track:
+        type: string
+        default: internal
+      release_status:
+        type: string
+        default: completed
+      build_number:
+        type: string
+        required: false
+
+jobs:
+  build:
+    name: Build${{ (inputs.track || 'none') != 'none' && ' and upload to Google Play' || '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    env:
+      TRACK: ${{ inputs.track || 'none' }}
+      GITHUB_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check secrets
+        id: secrets
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PLAY_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$GITHUB_CLIENT_ID" ] || [ -z "$GITHUB_CLIENT_SECRET" ]; then
+            echo "::error::CLIENT_ID and CLIENT_SECRET secrets are required (GitHub OAuth app)."; exit 1
+          fi
+          if [ -n "$KEYSTORE" ]; then
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          elif [ "$TRACK" = "none" ]; then
+            echo "::warning::ANDROID_KEYSTORE_BASE64 is not set; building with the debug key. This build can't be uploaded to Google Play."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::ANDROID_KEYSTORE_BASE64 is required to upload to Google Play."; exit 1
+          fi
+          if [ "$TRACK" != "none" ] && [ -z "$PLAY_JSON" ]; then
+            echo "::error::GOOGLE_PLAY_SERVICE_ACCOUNT_JSON is required to upload to Google Play."; exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Resolve version
+        id: version
+        env:
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          # yyDDDHHMM (UTC): increases with time and fits Play's versionCode limit until 2099.
+          BUILD_NUMBER="${BUILD_NUMBER:-$(date -u +%y%j%H%M)}"
+          VERSION=$(node -p "require('./app.json').expo.version")
+          PACKAGE=$(node -p "require('./app.json').expo.android.package")
+          echo "APP_BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "package=$PACKAGE" >> "$GITHUB_OUTPUT"
+          echo "### Android $VERSION ($BUILD_NUMBER) → \`$TRACK\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Build release bundle and APK
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          SIGNING=()
+          if [ "${{ steps.secrets.outputs.signed }}" = "true" ]; then
+            KEYSTORE="$RUNNER_TEMP/upload.keystore"
+            echo "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+            # Overrides the debug signing config that prebuild generates.
+            SIGNING=(
+              -Pandroid.injected.signing.store.file="$KEYSTORE"
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD"
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS"
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+            )
+          fi
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease assembleRelease --no-daemon "${SIGNING[@]}"
+
+      - name: Verify upload signature
+        if: steps.secrets.outputs.signed == 'true'
+        run: |
+          CERT=$(keytool -printcert -jarfile android/app/build/outputs/bundle/release/app-release.aab)
+          echo "$CERT" | grep -E "Owner:|SHA256:" | head -2
+          if echo "$CERT" | grep -q "CN=Android Debug"; then
+            echo "::error::The bundle is signed with the debug key, not the upload key."; exit 1
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build_number }}
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/mapping/release/mapping.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to Google Play
+        if: env.TRACK != 'none'
+        # Pinned to v1.1.5: this third-party action receives the Play service account key.
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ steps.version.outputs.package }}
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          releaseName: ${{ steps.version.outputs.version }} (${{ steps.version.outputs.build_number }})
+          track: ${{ env.TRACK }}
+          status: ${{ inputs.release_status || 'completed' }}

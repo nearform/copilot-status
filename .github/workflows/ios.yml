@@ -1,0 +1,183 @@
+# Builds a signed App Store IPA and optionally uploads it to TestFlight / App Store Connect.
+# See RELEASING.md for the required secrets and the one-time store setup.
+name: iOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload the build to App Store Connect (TestFlight)
+        type: boolean
+        default: true
+      build_number:
+        description: CFBundleVersion override (leave empty to generate one)
+        type: string
+        required: false
+  workflow_call:
+    inputs:
+      upload:
+        type: boolean
+        default: true
+      build_number:
+        type: string
+        required: false
+
+jobs:
+  build:
+    name: Build${{ inputs.upload && ' and upload to App Store Connect' || '' }}
+    # macOS runners bill at 10x Linux minutes, so iOS only builds on demand or on release.
+    runs-on: ${{ vars.IOS_RUNNER || 'macos-26' }}
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    env:
+      GITHUB_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      KEYCHAIN_PATH: ${{ runner.temp }}/app-signing.keychain-db
+      ARCHIVE_PATH: ${{ runner.temp }}/build/App.xcarchive
+      EXPORT_PATH: ${{ runner.temp }}/build/export
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check secrets
+        env:
+          UPLOAD: ${{ inputs.upload }}
+          IOS_DIST_CERT_P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+          IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+          IOS_APP_PROFILE_BASE64: ${{ secrets.IOS_APP_PROFILE_BASE64 }}
+          IOS_WIDGET_PROFILE_BASE64: ${{ secrets.IOS_WIDGET_PROFILE_BASE64 }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          REQUIRED=(GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET IOS_DIST_CERT_P12_BASE64 IOS_DIST_CERT_PASSWORD IOS_APP_PROFILE_BASE64 IOS_WIDGET_PROFILE_BASE64)
+          if [ "$UPLOAD" = "true" ]; then REQUIRED+=(ASC_API_KEY_ID ASC_API_ISSUER_ID ASC_API_KEY_P8); fi
+          MISSING=()
+          for name in "${REQUIRED[@]}"; do [ -n "${!name}" ] || MISSING+=("$name"); done
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            # GITHUB_CLIENT_* come from the CLIENT_ID / CLIENT_SECRET secrets.
+            echo "::error::Missing secrets: ${MISSING[*]}. See RELEASING.md."; exit 1
+          fi
+
+      - name: Select Xcode
+        env:
+          XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+        run: |
+          if [ -n "$XCODE_VERSION" ]; then
+            sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+          fi
+          xcodebuild -version
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve version
+        id: version
+        env:
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          # yyDDDHHMM (UTC): increases with time and matches the Android versionCode scheme.
+          BUILD_NUMBER="${BUILD_NUMBER:-$(date -u +%y%j%H%M)}"
+          VERSION=$(node -p "require('./app.json').expo.version")
+          echo "APP_BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "### iOS $VERSION ($BUILD_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Generate native iOS project
+        run: |
+          npx expo prebuild --platform ios --clean --no-install
+          # Run pod install explicitly: prebuild only warns when it fails.
+          cd ios && pod install
+
+      - name: Install distribution certificate
+        env:
+          P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+        run: |
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 24)
+          echo "::add-mask::$KEYCHAIN_PASSWORD"
+          CERT="$RUNNER_TEMP/dist.p12"
+          echo "$P12_BASE64" | base64 --decode > "$CERT"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          rm "$CERT"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+
+      - name: Install provisioning profiles and configure signing
+        env:
+          APP_PROFILE: ${{ secrets.IOS_APP_PROFILE_BASE64 }}
+          WIDGET_PROFILE: ${{ secrets.IOS_WIDGET_PROFILE_BASE64 }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/profiles"
+          echo "$APP_PROFILE" | base64 --decode > "$RUNNER_TEMP/profiles/app.mobileprovision"
+          echo "$WIDGET_PROFILE" | base64 --decode > "$RUNNER_TEMP/profiles/widget.mobileprovision"
+          node scripts/ci/ios-signing.js --install "$RUNNER_TEMP/ExportOptions.plist" "$RUNNER_TEMP"/profiles/*.mobileprovision
+
+      - name: Archive
+        run: |
+          WORKSPACE=$(ls -d ios/*.xcworkspace | head -1)
+          SCHEME=$(basename "$WORKSPACE" .xcworkspace)
+          if command -v xcbeautify > /dev/null; then FORMAT=(xcbeautify --renderer github-actions); else FORMAT=(cat); fi
+          set -o pipefail
+          xcodebuild archive \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$ARCHIVE_PATH" \
+            | "${FORMAT[@]}"
+
+      - name: Export IPA
+        id: export
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$ARCHIVE_PATH" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$EXPORT_PATH"
+          IPA=$(ls "$EXPORT_PATH"/*.ipa | head -1)
+          echo "ipa=$IPA" >> "$GITHUB_OUTPUT"
+          (cd "$ARCHIVE_PATH/dSYMs" && zip -qr "$EXPORT_PATH/dSYMs.zip" .)
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build_number }}
+          path: |
+            ${{ env.EXPORT_PATH }}/*.ipa
+            ${{ env.EXPORT_PATH }}/dSYMs.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to App Store Connect
+        if: inputs.upload
+        env:
+          IPA: ${{ steps.export.outputs.ipa }}
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          # altool looks for the key at ~/.appstoreconnect/private_keys/AuthKey_<id>.p8
+          mkdir -p ~/.appstoreconnect/private_keys
+          printf '%s\n' "$ASC_API_KEY_P8" > ~/.appstoreconnect/private_keys/AuthKey_${ASC_API_KEY_ID}.p8
+          xcrun altool --upload-app --type ios --file "$IPA" \
+            --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_API_ISSUER_ID"
+          echo "Uploaded to App Store Connect. The build appears in TestFlight once Apple finishes processing it." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Clean up signing material
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN_PATH" 2> /dev/null || true
+          rm -rf "$RUNNER_TEMP/profiles" ~/.appstoreconnect/private_keys
