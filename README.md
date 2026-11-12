@@ -4,6 +4,7 @@ A mobile app to monitor your AI coding assistant usage quota with native home sc
 
 ## Features
 
+- **Optional Sign-In** — The app opens on sample data; connecting GitHub is only needed to see your own usage
 - **GitHub OAuth Authentication** — Secure sign-in via OAuth 2.0 with PKCE, tokens stored in `expo-secure-store`
 - **Three Quota Tabs** — Dedicated tabs for Premium Requests, Chat, and Completions
 - **Interactive Pie Chart** — Tap to toggle between used and available quota views

@@ -38,11 +38,17 @@
   "cached": {
     "updated": "Updated"
   },
+  "sample": {
+    "title": "Showing sample data",
+    "message": "Connect your GitHub account to see your own AI coding usage.",
+    "connect": "Connect GitHub"
+  },
   "login": {
     "title": "CodeMeter",
     "subtitle": "Monitor your AI coding usage and quota in real-time",
     "signInButton": "Sign in with GitHub",
-    "footer": "Securely authenticate with your GitHub account to access your usage quota information."
+    "footer": "Securely authenticate with your GitHub account to access your usage quota information.",
+    "notNow": "Not now"
   },
   "settings": {
     "title": "Settings",
@@ -66,7 +72,10 @@
     "author": "Author",
     "authorName": "@nearform",
     "authorProfile": "https://github.com/nearform",
-    "disclaimer": "This app is not affiliated with or endorsed by GitHub."
+    "disclaimer": "This app is not affiliated with or endorsed by GitHub.",
+    "notConnected": "Not connected",
+    "notConnectedSubtitle": "Connect GitHub to see your AI coding usage",
+    "connectGitHub": "Connect GitHub"
   },
   "widget": {
     "appTitle": "CodeMeter",

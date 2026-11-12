@@ -2,7 +2,8 @@ import '@/services/i18n';
 import { persistOptions, queryClient } from '@/services/queryClient';
 import { ThemePreference } from '@/services/storage';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { Stack, router, useRootNavigationState, useSegments } from 'expo-router';
+import { goBackOrHome } from '@/utils/navigation';
+import { Stack, useRootNavigationState, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -15,28 +16,28 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-function useProtectedRoute() {
+/**
+ * Signing in is optional: signed-out users browse sample data. The only
+ * redirect is leaving the connect screen once sign-in succeeds.
+ */
+function useAuthRedirect() {
   const segments = useSegments();
   const navigationState = useRootNavigationState();
-  const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
+  const { isAuthenticated, hasCheckedAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!navigationState?.key || isLoading) return;
+    if (!navigationState?.key || !hasCheckedAuth) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
-
-    if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/login');
-    } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/(tabs)');
+    if (isAuthenticated && segments[0] === '(auth)') {
+      goBackOrHome();
     }
-  }, [isAuthenticated, segments, isLoading, navigationState?.key]);
+  }, [isAuthenticated, segments, hasCheckedAuth, navigationState?.key]);
 
-  return { isLoading };
+  return { hasCheckedAuth };
 }
 
 const statusBarColor: Record<ThemePreference, 'light' | 'dark' | 'auto'> = {
@@ -46,10 +47,14 @@ const statusBarColor: Record<ThemePreference, 'light' | 'dark' | 'auto'> = {
 };
 
 export default function RootLayout() {
-  const { isLoading } = useProtectedRoute();
+  const { hasCheckedAuth } = useAuthRedirect();
   const { rt } = useUnistyles();
 
-  if (isLoading) {
+  // Gate only the startup token check. Gating on isLoading would unmount the
+  // navigator during sign-in and drop the user off the connect screen on error.
+  // This gate also keeps PersistQueryClientProvider from restoring the cache
+  // until checkAuth has purged any legacy demo data (see stores/auth.ts).
+  if (!hasCheckedAuth) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
