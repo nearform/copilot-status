@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "codemeter",
     "name": "CodeMeter",
     "slug": "codemeter",
     "version": "1.0.0",
